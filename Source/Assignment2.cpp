@@ -54,7 +54,7 @@ Assignment2::makeTeapotScene()
 
     Material* material = new Lambert(Vector3(1.0f));
     TriangleMesh * teapot = new TriangleMesh;
-    teapot->load("teapot.obj");
+    teapot->load("Resource\\teapot.obj");
     addMeshTrianglesToScene(teapot, material);
     
     // create the floor triangle
@@ -103,7 +103,7 @@ Assignment2::makeBunny1Scene()
 
     Material* material = new Lambert(Vector3(1.0f));
     TriangleMesh * bunny = new TriangleMesh;
-    bunny->load("bunny.obj");
+    bunny->load("Resource\\bunny.obj");
     addMeshTrianglesToScene(bunny, material);
     
     // create the floor triangle
@@ -165,7 +165,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-1, .4, .3);
     xform *= rotate(25, .3, .1, .6);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 2
@@ -173,7 +173,7 @@ Assignment2::makeBunny20Scene()
     xform *= scale(.6, 1.2, .9);
     xform *= translate(7.6, .8, .6);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 3
@@ -181,14 +181,14 @@ Assignment2::makeBunny20Scene()
     xform *= translate(.7, 0, -2);
     xform *= rotate(120, 0, .6, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 4
     xform.setIdentity();
     xform *= translate(3.6, 3, -1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 5
@@ -196,7 +196,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-2.4, 2, 3);
     xform *= scale(1, .8, 2);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 6
@@ -204,7 +204,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(5.5, -.5, 1);
     xform *= scale(1, 2, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 7
@@ -213,7 +213,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-4, -.5, -6);
     xform *= scale(1, 2, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 8
@@ -221,7 +221,7 @@ Assignment2::makeBunny20Scene()
     xform *= rotate(60, 0, 1, 0);
     xform *= translate(5, .1, 3);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 9
@@ -229,7 +229,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-3, .4, 6);
     xform *= rotate(-30, 0, 1, 0);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 10
@@ -238,7 +238,7 @@ Assignment2::makeBunny20Scene()
     xform *= rotate(180, 0, 1, 0);
     xform *= scale(1.5, 1.5, 1.5);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 11
@@ -247,7 +247,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-1, .4, .3);
     xform *= rotate(25, .3, .1, .6);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 12
@@ -255,7 +255,7 @@ Assignment2::makeBunny20Scene()
     xform *= scale(.6, 1.2, .9);
     xform *= translate(7.6, .8, .6);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 13
@@ -263,14 +263,14 @@ Assignment2::makeBunny20Scene()
     xform *= translate(.7, 0, -2);
     xform *= rotate(120, 0, .6, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 14
     xform = xform2;
     xform *= translate(3.6, 3, -1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 15
@@ -278,7 +278,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-2.4, 2, 3);
     xform *= scale(1, .8, 2);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 16
@@ -286,7 +286,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(5.5, -.5, 1);
     xform *= scale(1, 2, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 17
@@ -295,7 +295,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-4, -.5, -6);
     xform *= scale(1, 2, 1);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 18
@@ -303,7 +303,7 @@ Assignment2::makeBunny20Scene()
     xform *= rotate(60, 0, 1, 0);
     xform *= translate(5, .1, 3);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 19
@@ -311,7 +311,7 @@ Assignment2::makeBunny20Scene()
     xform *= translate(-3, .4, 6);
     xform *= rotate(-30, 0, 1, 0);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
     // bunny 20
@@ -320,7 +320,7 @@ Assignment2::makeBunny20Scene()
     xform *= rotate(180, 0, 1, 0);
     xform *= scale(1.5, 1.5, 1.5);
     mesh = new TriangleMesh;
-    mesh->load("bunny.obj", xform);
+    mesh->load("Resource\\bunny.obj", xform);
     addMeshTrianglesToScene(mesh, material);
 
 
@@ -370,7 +370,7 @@ Assignment2::makeSponzaScene()
 
     Material* material = new Lambert(Vector3(1.0f));
     TriangleMesh * mesh = new TriangleMesh;
-    mesh->load("sponza.obj");
+    mesh->load("Resource\\sponza.obj");
     addMeshTrianglesToScene(mesh, material);
     
     // let objects do pre-calculations if needed

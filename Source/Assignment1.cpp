@@ -45,7 +45,7 @@ Assignment1::makeBunnyScene()
     Material* mat = new Lambert(Vector3(1.0f));
 
     TriangleMesh * bunny = new TriangleMesh;
-    bunny->load("bunny.obj");
+    bunny->load("Resource\\bunny.obj");
     
     // create all the triangles in the bunny mesh and add to the scene
     for (int i = 0; i < bunny->numTris(); ++i)
@@ -104,7 +104,7 @@ Assignment1::makeSphereScene()
     Material* sphereMat = new Lambert(Vector3(1.0, 0, 0));
 
     TriangleMesh * sphere = new TriangleMesh;
-    sphere->load("sphere.obj");
+    sphere->load("Resource\\sphere.obj");
     
     // create all the triangles in the bunny mesh and add to the scene
     for (int i = 0; i < sphere->numTris(); ++i)
@@ -164,7 +164,7 @@ Assignment1::makeSmoothSphereScene()
     Material* sphereMat = new Lambert(Vector3(1.0, 0, 0));
 
     TriangleMesh * sphere = new TriangleMesh;
-    sphere->load("sphere_smooth.obj");
+    sphere->load("Resource\\sphere_smooth.obj");
     
     // create all the triangles in the bunny mesh and add to the scene
     for (int i = 0; i < sphere->numTris(); ++i)
@@ -224,7 +224,7 @@ Assignment1::makeTeapotScene()
     Material* teapotMat = new Lambert(Vector3(0.7f, 0.0f, 1.0f));
 
     TriangleMesh * teapot = new TriangleMesh;
-    teapot->load("teapot.obj");
+    teapot->load("Resource\\teapot.obj");
     
     // create all the triangles in the teapot mesh and add to the scene
     for (int i = 0; i < teapot->numTris(); ++i)
@@ -327,7 +327,7 @@ Assignment1::makeDragonScene()
     Material* mat = new Lambert(Vector3(1.0f));
 
     TriangleMesh * dragon = new TriangleMesh;
-    dragon->load("dragon_smooth.obj");
+    dragon->load("Resource\\dragon_smooth.obj");
     
     // create all the triangles in the bunny mesh and add to the scene
     for (int i = 0; i < dragon->numTris(); ++i)

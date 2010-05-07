@@ -14,7 +14,10 @@ m_bIsLeaf( isLeaf )
 BoundingVolume::~BoundingVolume()
 {
 	for( unsigned int i = 0; i < m_children.size(); i++ )
-		m_children[i]->~Object();
+	{
+		delete m_children[i];
+		m_children[i] = NULL;
+	}
 
 	m_children.clear();
 }

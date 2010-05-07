@@ -7,6 +7,7 @@
 #include "DebugMem.h"
 
 #include <assert.h>
+#include <time.h>
 
 int BVH::BVIntersections = 0;
 int BVH::PrimIntersections = 0;
@@ -18,11 +19,14 @@ m_numLeaves(0), m_numNodes(0), m_objects(NULL), m_BVHRoot(NULL)
 
 BVH::~BVH() 
 {
+	m_BVHRoot->~BoundingVolume();
 }
 
 void
 BVH::build(Objects * objs)
 {
+	clock_t clockStart = clock();
+
 	if( USE_BVH )
 	{
 		// don't build anything if the scene is empty
@@ -39,8 +43,9 @@ BVH::build(Objects * objs)
 		m_objects = objs;
 	}
 
-	// did we have any memory leaks?
-	_CrtDumpMemoryLeaks();
+	clock_t clockEnd = clock();
+
+	printf("\nTotal build time: %.4f seconds\n\n", ((float)(clockEnd - clockStart))/1000.0f);
 }
 
 void
@@ -188,16 +193,27 @@ BVH::buildBVH( Objects * objs )
 
 		// build the left child
 		BoundingVolume * leftBV = buildBVH( leftChildObjs );
+		// now we're done with our local leftChildObjs; delete it
+		delete leftChildObjs;
+		leftChildObjs = NULL;
 		if( leftBV ) // only add it to this bounding volume if it's non-null
 			childObjs->push_back( leftBV );
 
 		// build the right child
 		BoundingVolume * rightBV = buildBVH( rightChildObjs );
+		// now we're done with our local rightChildObjs; delete it
+		delete rightChildObjs;
+		rightChildObjs = NULL;
 		if( rightBV ) // only add it to this bounding volume if it's non-null
 			childObjs->push_back( rightBV );
 
 		// finally, construct this bounding volume and return it
-		return new BoundingBox( childObjs, false, min, max );		
+		static BoundingVolume * bv;
+		bv = new BoundingBox( childObjs, false, min, max );		
+		// now we're done with childObjs; delete it
+		delete childObjs;
+		childObjs = NULL;
+		return bv;
 	}
 }
 

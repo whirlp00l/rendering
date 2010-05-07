@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Image.h"
 #include "DebugMem.h"
+#include "Scene.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -148,6 +149,13 @@ MiroWindow::keyboard(unsigned char key, int x, int y)
     switch (key)
     {
         case 27:
+			if( g_scene )
+			{
+				g_scene->~Scene();
+			}
+
+			// did we have any memory leaks?
+			_CrtDumpMemoryLeaks();
             exit(0);
         break;
 

@@ -44,13 +44,13 @@ main(int argc, char*argv[])
 	case 1:
 		// ASSIGNMENT 1
 		assn1 = new Assignment1();
-		assn1->makeSimpleTriangleScene();
+		assn1->makeDragonScene();
 		break;
 
 	case 2:
 		// ASSIGNMENT 2
 		assn2 = new Assignment2();
-		assn2->makeTeapotScene();
+		assn2->makeBunny20Scene();
 		break;
 		
 	default:

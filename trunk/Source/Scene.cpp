@@ -10,6 +10,15 @@
 
 Scene * g_scene = 0;
 
+Scene::Scene()
+{
+}
+
+Scene::~Scene()
+{
+	m_bvh.~BVH();
+}
+
 void
 Scene::openGL(Camera *cam)
 {

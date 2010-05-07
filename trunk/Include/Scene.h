@@ -12,6 +12,9 @@ class Image;
 class Scene
 {
 public:
+	Scene();
+	~Scene();
+
     void addObject(Object* pObj)        {m_objects.push_back(pObj);}
     const Objects* objects() const      {return &m_objects;}
 

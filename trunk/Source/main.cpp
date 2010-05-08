@@ -18,10 +18,11 @@
 #include "Assignment0.h"
 #include "Assignment1.h"
 #include "Assignment2.h"
+#include "Assignment3.h"
 
 #include <stdio.h>
 
-#define ASSIGNMENT_NUMBER 2
+#define ASSIGNMENT_NUMBER 3
 
 int
 main(int argc, char*argv[])
@@ -31,6 +32,7 @@ main(int argc, char*argv[])
 	Assignment0 *assn0;
 	Assignment1 *assn1;
 	Assignment2 *assn2;
+	Assignment3 *assn3;
 
 	switch( ASSIGNMENT_NUMBER )
 	{
@@ -57,6 +59,14 @@ main(int argc, char*argv[])
 		assn2->makeBunny20Scene();
 		delete assn2;
 		assn2 = NULL;
+		break;
+
+	case 3:
+		// ASSIGNMENT 3
+		assn3 = new Assignment3();
+		assn3->makeCornellScene();
+		delete assn3;
+		assn3 = NULL;
 		break;
 		
 	default:

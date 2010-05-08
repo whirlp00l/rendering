@@ -21,6 +21,10 @@ Assignment0::Assignment0()
 {
 }
 
+Assignment0::~Assignment0()
+{
+}
+
 void
 Assignment0::makeSpiralScene()
 {

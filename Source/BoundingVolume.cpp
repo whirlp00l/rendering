@@ -15,8 +15,11 @@ BoundingVolume::~BoundingVolume()
 {
 	for( unsigned int i = 0; i < m_children.size(); i++ )
 	{
-		delete m_children[i];
-		m_children[i] = NULL;
+		if( m_children[i] )
+		{
+			delete m_children[i];
+			m_children[i] = NULL;
+		}
 	}
 
 	m_children.clear();

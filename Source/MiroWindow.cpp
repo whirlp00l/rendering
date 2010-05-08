@@ -151,8 +151,22 @@ MiroWindow::keyboard(unsigned char key, int x, int y)
         case 27:
 			if( g_scene )
 			{
-				g_scene->~Scene();
+				delete g_scene;
+				g_scene = NULL;
 			}
+
+			if( g_camera )
+			{
+				delete g_camera;
+				g_camera = NULL;
+			}
+
+			if( g_image )
+			{
+				delete g_image;
+				g_image = NULL;
+			}
+
 
 			// did we have any memory leaks?
 			_CrtDumpMemoryLeaks();

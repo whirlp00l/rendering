@@ -14,7 +14,12 @@ Triangle::Triangle(TriangleMesh * m, unsigned int i) :
 
 Triangle::~Triangle()
 {
-
+	if( m_mesh )
+	{
+		// for some reason this doesn't work!!!	
+		//delete m_mesh;
+		//m_mesh = NULL;
+	}
 }
 
 

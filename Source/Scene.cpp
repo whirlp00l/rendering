@@ -17,6 +17,7 @@ Scene::Scene()
 Scene::~Scene()
 {
 	m_bvh.~BVH();
+	m_objects.~vector();
 }
 
 void

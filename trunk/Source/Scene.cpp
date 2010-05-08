@@ -17,7 +17,19 @@ Scene::Scene()
 Scene::~Scene()
 {
 	m_bvh.~BVH();
-	m_objects.~vector();
+	
+	// objects are deleted by the bvh destructor
+	m_objects.clear();
+
+	for( unsigned int i = 0; i < m_lights.size(); i++ )
+	{
+		if( m_lights[i] )
+		{
+			delete m_lights[i];
+			m_lights[i] = NULL;
+		}
+	}
+	m_lights.clear();
 }
 
 void

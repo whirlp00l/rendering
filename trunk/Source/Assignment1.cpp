@@ -19,6 +19,10 @@ Assignment1::Assignment1()
 {
 }
 
+Assignment1::~Assignment1()
+{
+}
+
 void
 Assignment1::makeBunnyScene()
 {

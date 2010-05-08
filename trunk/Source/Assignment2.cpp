@@ -56,7 +56,7 @@ Assignment2::makeTeapotScene()
     TriangleMesh * teapot = new TriangleMesh;
     teapot->load("Resource\\teapot.obj");
     addMeshTrianglesToScene(teapot, material);
-    
+
     // create the floor triangle
     TriangleMesh * floor = new TriangleMesh;
     floor->createSingleTriangle();

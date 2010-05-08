@@ -39,18 +39,24 @@ main(int argc, char*argv[])
 		assn0 = new Assignment0();
 		assn0->makeSpiralScene();
 		//assn0->makeSpirographScene();
+		delete assn0;
+		assn0 = NULL;
 		break;
 
 	case 1:
 		// ASSIGNMENT 1
 		assn1 = new Assignment1();
-		assn1->makeBunnyScene();
+		assn1->makeSimpleTriangleScene();
+		delete assn1;
+		assn1 = NULL;
 		break;
 
 	case 2:
 		// ASSIGNMENT 2
 		assn2 = new Assignment2();
 		assn2->makeBunny20Scene();
+		delete assn2;
+		assn2 = NULL;
 		break;
 		
 	default:

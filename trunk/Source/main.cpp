@@ -50,7 +50,7 @@ main(int argc, char*argv[])
 	case 2:
 		// ASSIGNMENT 2
 		assn2 = new Assignment2();
-		assn2->makeBunny20Scene();
+		assn2->makeTeapotScene();
 		break;
 		
 	default:

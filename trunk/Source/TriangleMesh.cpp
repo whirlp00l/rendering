@@ -16,10 +16,39 @@ TriangleMesh::TriangleMesh() :
 
 TriangleMesh::~TriangleMesh()
 {
-    delete [] m_normals;
-    delete [] m_vertices;
-    delete [] m_texCoords;
-    delete [] m_normalIndices;
-    delete [] m_vertexIndices;
-    delete [] m_texCoordIndices;
+	if( m_normals )
+	{
+		delete [] m_normals;
+		m_normals = NULL;
+	}
+
+	if( m_vertices )
+	{
+		delete [] m_vertices;
+		m_vertices = NULL;
+	}
+
+	if( m_texCoords )
+	{
+		delete [] m_texCoords;
+		m_texCoords = NULL;
+	}
+    
+	if( m_normalIndices )
+	{
+		delete [] m_normalIndices;
+		m_normalIndices = NULL;
+	}
+    
+	if( m_vertexIndices )
+	{
+		delete [] m_vertexIndices;
+		m_vertexIndices = NULL;
+	}
+
+	if( m_texCoordIndices )
+	{
+		delete [] m_texCoordIndices;
+		m_texCoordIndices = NULL;
+	}
 }

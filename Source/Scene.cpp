@@ -172,7 +172,7 @@ Scene::raytraceImage(Camera *cam, Image *img)
 	*/
 
 	printf("Rendering statistics:\n");	
-	printf("\tTotal render time: %.4f seconds\n", ((float)(clockEnd - clockStart))/1000.0f);
+	printf("\tTotal render time: %.4f seconds\n", ((float)(clockEnd - clockStart))/CLOCKS_PER_SEC);
 	printf("\t%d BVH nodes (includes # leaves)\n", m_bvh.numNodes() );
 	printf("\t\t(up to %d child(ren) per node)\n", NUM_NODE_CHILDREN );
 	printf("\t%d BVH leaves\n", m_bvh.numLeaves() );

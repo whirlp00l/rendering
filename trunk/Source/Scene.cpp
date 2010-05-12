@@ -92,14 +92,16 @@ Scene::raytraceImage(Camera *cam, Image *img)
 	SYSTEMTIME locStartTime;
 
 	GetLocalTime(&locStartTime);
-	clock_t clockStart = clock();
+	
 
 	BVH::resetIntersections();
+
 	/*
 	printf( "\nRendering start time: %02d:%02d:%02d:%02d\n", locStartTime.wHour, locStartTime.wMinute, 
 		locStartTime.wSecond, locStartTime.wMilliseconds );
-	*/
-    
+	*/    
+	clock_t clockStart = clock();
+
 	int numRays = 0;
     // loop over all pixels in the image
     for (int j = 0; j < img->height(); ++j)

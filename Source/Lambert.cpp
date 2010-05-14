@@ -3,10 +3,9 @@
 #include "Scene.h"
 #include "DebugMem.h"
 
-Lambert::Lambert(const Vector3 & kd, const Vector3 & ka) :
-    m_kd(kd), m_ka(ka)
+Lambert::Lambert(const Vector3 & kd, const Vector3 & ka, const float & phongExp) :
+m_kd(kd), m_ka(ka), m_phong_exp(phongExp), m_use_highlights(true)
 {
-
 }
 
 Lambert::~Lambert()
@@ -42,6 +41,15 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
         result *= m_kd;
         
         L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result;
+
+		if( m_use_highlights )
+		{
+			// now calculate phong highlight
+			Vector3 reflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+			float viewDirDotReflectDir = dot( viewDir, reflectDir );
+			if( viewDirDotReflectDir > 0 )
+				L += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp));
+		}
     }
     
     // add the ambient component

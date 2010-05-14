@@ -58,7 +58,6 @@ protected:
 	static int sortByXComponent( const void * p1, const void * p2 );
 	static int sortByYComponent( const void * p1, const void * p2 );
 	static int sortByZComponent( const void * p1, const void * p2 );
-	static int sortByCost( const void * p1, const void * p2 );
 
 private:
 	static int BVIntersections;

@@ -288,13 +288,19 @@ BVH::findBestSplit( Objects * objs, BVH::MidPointMap * sortedMidPointMap, int nu
 		allSplitStats[i-1].rightBVCost = computeCost( parentSurfaceArea, BoundingBox::calcPotentialSurfaceArea( min, max ), numTris );
 	}
 
-	// sort all the split stats by cost
-	qsort( allSplitStats, numMidPoints - 1, sizeof( SplitStats ), BVH::sortByCost );
-
 	// choose the lowest cost (i.e. the first element)
 	bestSplit.leftBVCost = allSplitStats[0].leftBVCost;
 	bestSplit.rightBVCost = allSplitStats[0].rightBVCost;
 	bestSplit.lastLeftNodeIndex = allSplitStats[0].lastLeftNodeIndex;
+	for( i = 1; i < (numMidPoints - 1); i++ )
+	{
+		if( allSplitStats[i].leftBVCost + allSplitStats[i].rightBVCost < bestSplit.leftBVCost + bestSplit.rightBVCost )
+		{
+			bestSplit.leftBVCost = allSplitStats[i].leftBVCost;
+			bestSplit.rightBVCost = allSplitStats[i].rightBVCost;
+			bestSplit.lastLeftNodeIndex = allSplitStats[i].lastLeftNodeIndex;
+		}
+	}
 
 	// free the split stats memory
 	delete [] allSplitStats;
@@ -404,25 +410,3 @@ BVH::sortByZComponent( const void * p1, const void * p2 )
 	else
 		return 0;
 }
-
-int
-BVH::sortByCost( const void * p1, const void * p2 )
-{
-	static float totalCostSplit1, totalCostSplit2; // static to save stack space
-	SplitStats * splitStats1 = ( SplitStats * )p1;
-	SplitStats * splitStats2 = ( SplitStats * )p2;
-
-	totalCostSplit1 = splitStats1->leftBVCost + splitStats1->rightBVCost;
-	totalCostSplit2 = splitStats2->leftBVCost + splitStats2->rightBVCost;
-
-	// 1st cost is smaller
-	if( totalCostSplit1 < totalCostSplit2 )
-		return -1;
-	// 2nd cost is smaller
-	else if( totalCostSplit1 > totalCostSplit2 )
-		return 1;
-	// the costs are equal
-	else
-		return 0;
-}
-

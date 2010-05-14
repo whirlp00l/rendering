@@ -10,6 +10,12 @@ public:
     Material();
     virtual ~Material();
 
+	enum Type
+	{
+		DIFFUSE,
+		SPECULAR
+	};
+
     virtual void preCalc() {}
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,

@@ -46,6 +46,7 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		{
 			// now calculate phong highlight
 			Vector3 reflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+			reflectDir.normalize();
 			float viewDirDotReflectDir = dot( viewDir, reflectDir );
 			if( viewDirDotReflectDir > 0 )
 				L += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();

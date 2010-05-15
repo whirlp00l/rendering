@@ -78,17 +78,6 @@ Scene::raytraceImage(Camera *cam, Image *img)
     HitInfo hitInfo;
     Vector3 shadeResult;
 
-	// to keep track of shadows
-	bool ** pixelInShadow = new bool *[img->width()];
-	for( int i = 0; i < img->width(); i++ )
-	{
-		pixelInShadow[i] = new bool[img->height()];
-		for( int j = 0; j < img->height(); j++ )
-		{
-			pixelInShadow[i][j] = false;
-		}
-	}
-
 	SYSTEMTIME locStartTime;
 
 	GetLocalTime(&locStartTime);
@@ -113,38 +102,10 @@ Scene::raytraceImage(Camera *cam, Image *img)
             {
                 shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
                 img->setPixel(i, j, shadeResult);
-
-				// since we hit the object, we must trace a shadow ray
-				for( unsigned int k = 0; k < m_lights.size(); k++ )
-				{
-					Ray shadowRay;
-					shadowRay.o = hitInfo.P;
-					float magnitude = ( m_lights[k]->position() - hitInfo.P ).length();
-					shadowRay.d = ( m_lights[k]->position() - hitInfo.P ) / magnitude;
-					// we have a shadow!
-					if( trace( hitInfo, shadowRay, epsilon, magnitude ) )
-					{
-						pixelInShadow[i][j] = true;
-					}
-				}
-
-				numRays++; // one more shadow ray has been traced
             }
 
 			numRays++; // one more primary ray has been traced
         }
-
-		// now add in the shadow pixels
-		for( int i = 0; i < img->width(); i++ )
-		{
-			for( int j = 0; j < img->height(); j++ )
-			{
-				if( pixelInShadow[i][j] )
-				{
-					img->setPixel( i, j, Vector3(0,0,0) );
-				}
-			}
-		}
 
         img->drawScanline(j);
         glFinish();
@@ -156,15 +117,6 @@ Scene::raytraceImage(Camera *cam, Image *img)
 
 	GetLocalTime(&locEndTime);
 	clock_t clockEnd = clock();
-
-	// now we're done with our shadow pixels; delete them
-	for( int i = 0; i < img->width(); i++ )
-	{
-		delete [] pixelInShadow[i];
-		pixelInShadow[i] = NULL;
-	}
-	delete [] pixelInShadow;
-	pixelInShadow = NULL;
     
     printf("Rendering Progress: 100.000%\n");
     debug("done Raytracing!\n");

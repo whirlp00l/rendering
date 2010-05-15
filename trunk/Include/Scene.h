@@ -26,12 +26,13 @@ public:
 
     void raytraceImage(Camera *cam, Image *img);
     bool trace(HitInfo& minHit, const Ray& ray,
-               float tMin = 0.0f, float tMax = MIRO_TMAX) const;
+               float tMin = 0.0f, float tMax = MIRO_TMAX);
 
 protected:
     Objects m_objects;
     BVH m_bvh;
     Lights m_lights;
+	int m_num_rays_traced;
 };
 
 extern Scene * g_scene;

@@ -15,7 +15,7 @@ BoundingBox::~BoundingBox()
 bool
 BoundingBox::intersect( HitInfo& result, const Ray& ray, float tMin, float tMax )
 {
-	BoundingBox::IntersectingPlane plane;
+	BVH::intersectBoundingVolume();
 
 	// pre-compute denominators so we don't have to perform expensive divisions
 	float oneOverDX = 1/ray.d.x;
@@ -81,11 +81,14 @@ BoundingBox::intersect( HitInfo& result, const Ray& ray, float tMin, float tMax 
 		return false;
 
 	// if we've reached this point, we have an intersection!
+	/*
+	// THIS CODE IS UNNECESSARY UNLESS WE WANT TO ACTUALLY SHADE THE BOUNDING VOLUME
 	// use first intersection point (min) for computing the actual intersection
 	result.t = min;
 	result.P = ray.o + (result.t * ray.d);
 
 	// figure out which plane we intersected
+	BoundingBox::IntersectingPlane plane;
 	if( result.P.x > ( m_vMin.x - epsilon ) && result.P.x < ( m_vMin.x + epsilon ) )
 		plane = XMIN_PLANE;
 	else if( result.P.x > ( m_vMax.x - epsilon ) && result.P.x < ( m_vMax.x + epsilon ) )
@@ -101,8 +104,8 @@ BoundingBox::intersect( HitInfo& result, const Ray& ray, float tMin, float tMax 
 
 	result.N = getPlaneNormal( plane );
 	result.material = this->m_material;
-
-	BVH::intersectBoundingVolume();
+	// END UNNECESSARY CODE
+	*/
 
 	bool intersectionFound = false;
 	// the bounding volume was hit; we must check intersections with all of its children

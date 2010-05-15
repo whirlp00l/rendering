@@ -12,6 +12,7 @@ Scene * g_scene = 0;
 
 Scene::Scene()
 {
+	m_num_rays_traced = 0;
 }
 
 Scene::~Scene()
@@ -78,20 +79,19 @@ Scene::raytraceImage(Camera *cam, Image *img)
     HitInfo hitInfo;
     Vector3 shadeResult;
 
-	SYSTEMTIME locStartTime;
-
-	GetLocalTime(&locStartTime);
-	
-
 	BVH::resetIntersections();
 
 	/*
+	SYSTEMTIME locStartTime;
+
+	GetLocalTime(&locStartTime);
+
 	printf( "\nRendering start time: %02d:%02d:%02d:%02d\n", locStartTime.wHour, locStartTime.wMinute, 
 		locStartTime.wSecond, locStartTime.wMilliseconds );
 	*/    
 	clock_t clockStart = clock();
 
-	int numRays = 0;
+	m_num_rays_traced = 0;
     // loop over all pixels in the image
     for (int j = 0; j < img->height(); ++j)
     {
@@ -103,8 +103,6 @@ Scene::raytraceImage(Camera *cam, Image *img)
                 shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
                 img->setPixel(i, j, shadeResult);
             }
-
-			numRays++; // one more primary ray has been traced
         }
 
         img->drawScanline(j);
@@ -113,9 +111,11 @@ Scene::raytraceImage(Camera *cam, Image *img)
         fflush(stdout);
     }
 
+	/*
 	SYSTEMTIME locEndTime;
 
 	GetLocalTime(&locEndTime);
+	*/
 	clock_t clockEnd = clock();
     
     printf("Rendering Progress: 100.000%\n");
@@ -131,16 +131,17 @@ Scene::raytraceImage(Camera *cam, Image *img)
 	printf("\t\t(up to %d child(ren) per node)\n", NUM_NODE_CHILDREN );
 	printf("\t%d BVH leaves\n", m_bvh.numLeaves() );
 	printf("\t\t(up to %d primitive(s) per leaf)\n", NUM_LEAF_CHILDREN );
-	printf("\t%d rays\n", numRays);
+	printf("\t%d rays\n", m_num_rays_traced);
 	printf("\t%d ray <=> bounding volume intersections\n", BVH::BoundingVolumeIntersections());
 	printf("\t%d ray <=> primitive intersections\n", BVH::PrimitiveIntersections());
-	printf("\t%.4f average triangle intersections per ray\n", BVH::PrimitiveIntersections()/(float)numRays);
-	printf("\t%.4f average bounding volume intersections per ray\n", BVH::BoundingVolumeIntersections()/(float)numRays);
+	printf("\t%.4f average triangle intersections per ray\n", BVH::PrimitiveIntersections()/(float)m_num_rays_traced);
+	printf("\t%.4f average bounding volume intersections per ray\n", BVH::BoundingVolumeIntersections()/(float)m_num_rays_traced);
 	printf("\n");
 }
 
 bool
-Scene::trace(HitInfo& minHit, const Ray& ray, float tMin, float tMax) const
+Scene::trace(HitInfo& minHit, const Ray& ray, float tMin, float tMax)
 {
+	m_num_rays_traced++; // one more ray has been traced
     return m_bvh.intersect(minHit, ray, tMin, tMax);
 }

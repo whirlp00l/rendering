@@ -3,7 +3,7 @@
 
 #define USE_BVH 1
 #define NUM_NODE_CHILDREN 2 // don't change this
-#define NUM_LEAF_CHILDREN 1 // this can be varied for best performance
+#define NUM_LEAF_CHILDREN 4 // this can be varied for best performance
 
 #include "Miro.h"
 #include "Object.h"

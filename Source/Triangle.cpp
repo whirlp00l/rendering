@@ -43,6 +43,8 @@ Triangle::renderGL()
 bool
 Triangle::intersect(HitInfo& result, const Ray& r,float tMin, float tMax)
 {
+	BVH::intersectPrimitive();
+
 	TriangleMesh::TupleI3 ti3Vertices = m_mesh->vIndices()[m_index];
 	const Vector3 & ptA = m_mesh->vertices()[ti3Vertices.x]; //vertex a of triangle
 	const Vector3 & ptB = m_mesh->vertices()[ti3Vertices.y]; //vertex b of triangle
@@ -106,7 +108,6 @@ Triangle::intersect(HitInfo& result, const Ray& r,float tMin, float tMax)
 			result.N.normalize();
 			result.material = this->m_material;
 
-			BVH::intersectPrimitive();
 			return true;
 		}
 		else
@@ -140,7 +141,6 @@ Triangle::intersect(HitInfo& result, const Ray& r,float tMin, float tMax)
 			result.N.normalize();
 			result.material = this->m_material;
 			
-			BVH::intersectPrimitive();
 			return true;
 		}
 		else

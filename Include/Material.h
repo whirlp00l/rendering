@@ -13,13 +13,19 @@ public:
 	enum Type
 	{
 		DIFFUSE,
-		SPECULAR
+		PHONG_DIFFUSE,
+		SPECULAR,
+		UNDEFINED
 	};
 
     virtual void preCalc() {}
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
+
+	Type getType() const { return m_type; }
+protected:
+	Type m_type;
 };
 
 #endif // CSE168_MATERIAL_H_INCLUDED

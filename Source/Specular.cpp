@@ -2,6 +2,7 @@
 
 Specular::Specular( const Vector3 & ks )
 {
+	m_type = Material::SPECULAR;
 }
 
 Specular::~Specular()

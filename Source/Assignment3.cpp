@@ -9,6 +9,7 @@
 #include "TriangleMesh.h"
 #include "Triangle.h"
 #include "Lambert.h"
+#include "PhongLambert.h"
 #include "Specular.h"
 
 // local helper function declarations
@@ -54,6 +55,9 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	{
 	case Material::DIFFUSE:
 		teapotMaterial = new Lambert( Vector3(1,0,0) );
+		break;
+	case Material::PHONG_DIFFUSE:
+		teapotMaterial = new PhongLambert( Vector3(1,0,0) );
 		break;
 	case Material::SPECULAR:
 		teapotMaterial = new Specular();

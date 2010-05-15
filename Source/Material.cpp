@@ -3,6 +3,7 @@
 
 Material::Material()
 {
+	m_type = Material::UNDEFINED;
 }
 
 Material::~Material()

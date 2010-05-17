@@ -6,7 +6,7 @@
 class SpecularRefractor : public Lambert
 {
 public:
-	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd );
+	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd = Vector3(1) );
 	~SpecularRefractor();
 
 	virtual void preCalc() {}

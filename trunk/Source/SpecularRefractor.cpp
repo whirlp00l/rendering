@@ -7,6 +7,7 @@ SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vecto
 Lambert(kd)
 {
 	m_refractive_index = refractiveIndex;
+	m_type = Material::SPECULAR_REFRACTOR;
 }
 
 SpecularRefractor::~SpecularRefractor()

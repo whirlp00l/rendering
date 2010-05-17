@@ -40,9 +40,9 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		Ray shadowRay;
 		shadowRay.d = l;
 		shadowRay.o = hit.P;
-		HitInfo hitInfo = hit;
+		HitInfo hitInfo;
 		// we have a shadow!
-		if( g_scene->trace( hitInfo, shadowRay, epsilon, magnitude ) )
+		if( scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
 		{
 			continue;
 		}

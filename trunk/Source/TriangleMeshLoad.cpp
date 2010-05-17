@@ -140,7 +140,6 @@ TriangleMesh::loadObj(FILE* fp, const Matrix4x4& ctm)
     Matrix4x4 nctm = ctm;
     nctm.invert();
     nctm.transpose();
-    nctm.invert();
 
     while (fgets(line, 80, fp) != 0)
     {

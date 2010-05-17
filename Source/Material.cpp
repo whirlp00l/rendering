@@ -1,7 +1,7 @@
 #include "Material.h"
 #include "DebugMem.h"
 
-const int Material::SPECULAR_RECURSION_DEPTH = 20;
+const int Material::SPECULAR_RECURSION_DEPTH = 5;
 
 Material::Material()
 {

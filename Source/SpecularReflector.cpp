@@ -1,4 +1,4 @@
-#include "Specular.h"
+#include "SpecularReflector.h"
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"

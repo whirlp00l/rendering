@@ -252,7 +252,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Source\Specular.cpp"
+				RelativePath=".\Source\SpecularReflector.cpp"
 				>
 			</File>
 			<File
@@ -390,7 +390,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\Specular.h"
+				RelativePath=".\Include\SpecularReflector.h"
 				>
 			</File>
 			<File

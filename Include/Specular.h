@@ -6,20 +6,22 @@
 class Specular : public Material
 {
 public:
-	Specular( const Vector3 & ks = Vector3(1) );
+	Specular( const Vector3 & kd = Vector3(1) );
 	~Specular();
 
-	const Vector3 & ks() const {return m_ks;}
+	const Vector3 & kd() const {return m_kd;}
 
-    void setKd(const Vector3 & ks) {m_ks = ks;}
+	void setKd(const Vector3 & kd) {m_kd = kd;}
 
 	virtual void preCalc() {}
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
 
-protected:
-	Vector3 m_ks;
+	static const int RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
+
+protected:	
+	Vector3 m_kd;
 };
 
 #endif;

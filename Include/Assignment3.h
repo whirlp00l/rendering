@@ -11,6 +11,8 @@ public:
 
 	void makeCornellScene();
 	void makeTeapotScene( Material::Type teapotMaterialType );
+	void makeMultipleTeapotsScene();
+	void makeTeapot2Scene();
 };
 
 #endif // CSE168_ASSIGNMENT_3_H_INCLUDED

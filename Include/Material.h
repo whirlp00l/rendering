@@ -14,7 +14,8 @@ public:
 	{
 		DIFFUSE,
 		PHONG_DIFFUSE,
-		SPECULAR,
+		SPECULAR_REFLECTOR,
+		SPECULAR_REFRACTOR,
 		UNDEFINED
 	};
 
@@ -25,6 +26,9 @@ public:
 
 	Type getType() const { return m_type; }
 	float getRefractiveIndex() const { return m_refractive_index; }
+	bool isSpecular() const { return m_type == SPECULAR_REFLECTOR || m_type == SPECULAR_REFRACTOR; }
+
+	static const int SPECULAR_RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
 
 protected:
 	Type m_type;

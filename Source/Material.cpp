@@ -1,6 +1,8 @@
 #include "Material.h"
 #include "DebugMem.h"
 
+const int Material::SPECULAR_RECURSION_DEPTH = 20;
+
 Material::Material()
 {
 	m_refractive_index = 1.0f;

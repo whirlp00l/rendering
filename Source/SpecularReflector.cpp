@@ -5,12 +5,10 @@
 
 #include <assert.h>
 
-const int SpecularReflector::RECURSION_DEPTH = 20;
-
 SpecularReflector::SpecularReflector( const Vector3 & kd ) :
 Lambert(kd)
 {
-	m_type = Material::SPECULAR;
+	m_type = Material::SPECULAR_REFLECTOR;
 }
 
 SpecularReflector::~SpecularReflector()
@@ -32,15 +30,16 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 		
 		reflectedRay.o = recursiveHit.P;
 		reflectedRay.d = reflectDir;
-		reflectedRay.refractiveIndex = 1.0f;
+		// the refractiveIndex of this ray remains unchanged
+
 		hitSomething = scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX );
 
 		numRecursiveCalls++;
 	}
-	while( hitSomething && recursiveHit.material->getType() == Material::SPECULAR && numRecursiveCalls < RECURSION_DEPTH );
+	while( hitSomething && recursiveHit.material->isSpecular() && numRecursiveCalls < Material::SPECULAR_RECURSION_DEPTH );
 
 	// we maxed out our recursion by hitting a specular surface or we simply didn't hit anything
-	if( !hitSomething || recursiveHit.material->getType() == Material::SPECULAR )
+	if( !hitSomething || recursiveHit.material->isSpecular() )
 	{
 		return m_kd;
 	}

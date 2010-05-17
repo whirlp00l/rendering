@@ -13,8 +13,6 @@ public:
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
-
-	static const int RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
 };
 
 #endif; // SPECULAR_REFLECTOR_H

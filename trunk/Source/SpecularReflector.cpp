@@ -32,6 +32,7 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 		
 		reflectedRay.o = recursiveHit.P;
 		reflectedRay.d = reflectDir;
+		reflectedRay.refractiveIndex = 1.0f;
 		hitSomething = scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX );
 
 		numRecursiveCalls++;

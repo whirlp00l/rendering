@@ -128,5 +128,5 @@ Camera::eyeRay(int x, int y, int imageWidth, int imageHeight)
     const float imPlaneUPos = left   + (right - left)*(((float)x+0.5f)/(float)imageWidth); 
     const float imPlaneVPos = bottom + (top - bottom)*(((float)y+0.5f)/(float)imageHeight); 
 
-    return Ray(m_eye, (imPlaneUPos*uDir + imPlaneVPos*vDir - wDir).normalize());
+    return Ray(m_eye, (imPlaneUPos*uDir + imPlaneVPos*vDir - wDir).normalize(), 1.0f);
 }

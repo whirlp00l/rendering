@@ -8,16 +8,22 @@ class Ray
 public:
     Vector3 o,      //!< Origin of ray
             d;      //!< Direction of ray
+	float refractiveIndex; // refractive index of the material that the ray is travelling through
 
-    Ray() : o(), d(Vector3(0.0f,0.0f,1.0f))
+	Ray() : o(), d(Vector3(0.0f,0.0f,1.0f)), refractiveIndex(1.0f)
     {
         // empty
     }
 
-    Ray(const Vector3& o, const Vector3& d) : o(o), d(d)
+	Ray(const Vector3& o, const Vector3& d) : o(o), d(d), refractiveIndex(1.0f)
     {
         // empty
     }
+
+	Ray(const Vector3& o, const Vector3& d, const float& refractiveIndex) : o(o), d(d), refractiveIndex(refractiveIndex)
+	{
+		// empty
+	}
 };
 
 

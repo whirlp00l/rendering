@@ -231,7 +231,6 @@ Assignment3::makeTeapot2Scene()
     addMeshTrianglesToScene(mesh, material);
     
     // teapot 2
-	//material = new SpecularRefractor(SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON));
 	material = new SpecularReflector();
     xform.setIdentity();
     xform *= translate(2.0, 0, 3);
@@ -240,7 +239,8 @@ Assignment3::makeTeapot2Scene()
     addMeshTrianglesToScene(mesh, material);
     
     // teapot 3   
-    material = new Lambert(Vector3(0.0f, 1.0f, 1.0f));
+    //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
+	material = new SpecularRefractor(SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON));
     xform.setIdentity();
     xform *= translate(-2, 0, 4);
     xform *= rotate(45, 0, 1, 0);
@@ -249,7 +249,7 @@ Assignment3::makeTeapot2Scene()
     addMeshTrianglesToScene(mesh, material);
     
     // create the floor triangle
-	material = new Lambert(Vector3(0,1,0));
+	material = new Lambert(Vector3(1));
     mesh = new TriangleMesh;
     mesh->createSingleTriangle();
     mesh->setV1(Vector3(-100, 0, -100));

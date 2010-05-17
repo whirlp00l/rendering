@@ -8,7 +8,7 @@
 const int SpecularReflector::RECURSION_DEPTH = 20;
 
 SpecularReflector::SpecularReflector( const Vector3 & kd ) :
-m_kd(kd)
+Lambert(kd)
 {
 	m_type = Material::SPECULAR;
 }

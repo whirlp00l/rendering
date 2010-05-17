@@ -1,12 +1,12 @@
 #ifndef SPECULAR_REFRACTOR_H
 #define SPECULAR_REFRACTOR_H
 
-#include "Material.h"
+#include "Lambert.h"
 
-class SpecularRefractor : public Material
+class SpecularRefractor : public Lambert
 {
 public:
-	SpecularRefractor( float refractiveIndex );
+	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd );
 	~SpecularRefractor();
 
 	virtual void preCalc() {}

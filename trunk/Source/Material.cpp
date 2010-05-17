@@ -3,6 +3,7 @@
 
 Material::Material()
 {
+	m_refractive_index = 1.0f;
 	m_type = Material::UNDEFINED;
 }
 

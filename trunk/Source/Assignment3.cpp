@@ -10,7 +10,7 @@
 #include "Triangle.h"
 #include "Lambert.h"
 #include "PhongLambert.h"
-#include "Specular.h"
+#include "SpecularReflector.h"
 
 // local helper function declarations
 namespace

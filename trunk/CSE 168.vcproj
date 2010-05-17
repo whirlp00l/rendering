@@ -256,6 +256,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Source\SpecularRefractor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Sphere.cpp"
 				>
 			</File>
@@ -391,6 +395,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\SpecularReflector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\SpecularRefractor.h"
 				>
 			</File>
 			<File

@@ -24,8 +24,11 @@ public:
                           const Scene& scene) const;
 
 	Type getType() const { return m_type; }
+	float getRefractiveIndex() const { return m_refractive_index; }
+
 protected:
 	Type m_type;
+	float m_refractive_index;
 };
 
 #endif // CSE168_MATERIAL_H_INCLUDED

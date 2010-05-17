@@ -5,20 +5,20 @@
 
 #include <assert.h>
 
-const int Specular::RECURSION_DEPTH = 20;
+const int SpecularReflector::RECURSION_DEPTH = 20;
 
-Specular::Specular( const Vector3 & kd ) :
+SpecularReflector::SpecularReflector( const Vector3 & kd ) :
 m_kd(kd)
 {
 	m_type = Material::SPECULAR;
 }
 
-Specular::~Specular()
+SpecularReflector::~SpecularReflector()
 {
 }
 
 Vector3
-Specular::shade( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
 {
 	bool hitSomething;
 	HitInfo recursiveHit = hit;

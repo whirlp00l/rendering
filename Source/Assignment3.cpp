@@ -63,7 +63,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		teapotMaterial = new PhongLambert( Vector3(1,0,0) );
 		break;
 	case Material::SPECULAR:
-		teapotMaterial = new Specular();
+		teapotMaterial = new SpecularReflector();
 		break;
 	}
 
@@ -128,7 +128,7 @@ Assignment3::makeMultipleTeapotsScene()
     diffuseTeapot->load("Resource\\teapot.obj", transform);
     addMeshTrianglesToScene(diffuseTeapot, diffuseMaterial);
 
-	Material * specularMaterial = new Specular(Vector3(1));
+	Material * specularMaterial = new SpecularReflector(Vector3(1));
 	TriangleMesh * specularTeapot = new TriangleMesh;
 	transform.setIdentity();
 	transform *= translate( 2, 0, 0 );
@@ -217,7 +217,7 @@ Assignment3::makeTeapot2Scene()
     Matrix4x4 xform;
 
     // teapot 1   
-	Material* material = new Specular(Vector3(0.0f, 0.0f, 1.0f));
+	Material* material = new SpecularReflector(Vector3(0.0f, 0.0f, 1.0f));
     xform.setIdentity();
     xform *= translate(-1, 0, -1);
     xform *= rotate(25, 0, 0, 0);
@@ -226,7 +226,7 @@ Assignment3::makeTeapot2Scene()
     addMeshTrianglesToScene(mesh, material);
     
     // teapot 2
-	material = new Specular(Vector3(1.0f));
+	material = new SpecularReflector(Vector3(1.0f));
     xform.setIdentity();
     xform *= translate(2.0, 0, 3);
     mesh = new TriangleMesh;

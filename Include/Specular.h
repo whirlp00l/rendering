@@ -1,13 +1,13 @@
-#ifndef SPECULAR_H
-#define SPECULAR_H
+#ifndef SPECULAR_REFLECTOR_H
+#define SPECULAR_REFLECTOR_H
 
 #include "Material.h"
 
-class Specular : public Material
+class SpecularReflector : public Material
 {
 public:
-	Specular( const Vector3 & kd = Vector3(1) );
-	~Specular();
+	SpecularReflector( const Vector3 & kd = Vector3(1) );
+	~SpecularReflector();
 
 	const Vector3 & kd() const {return m_kd;}
 
@@ -24,4 +24,4 @@ protected:
 	Vector3 m_kd;
 };
 
-#endif;
+#endif; // SPECULAR_REFLECTOR_H

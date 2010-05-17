@@ -18,33 +18,36 @@ SpecularReflector::~SpecularReflector()
 Vector3
 SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
 {
-	bool hitSomething;
-	HitInfo recursiveHit = hit;
-	Ray reflectedRay = ray;
-	int numRecursiveCalls = 0;
-	do
+	static int numRecursiveCalls = 0;
+	// we've maxed out our recursion
+	if( numRecursiveCalls == Material::SPECULAR_RECURSION_DEPTH )
 	{
-		// direction to last "eye" point reflected across hit surface normal
-		Vector3 reflectDir = -2 * dot(reflectedRay.d, recursiveHit.N) * recursiveHit.N + reflectedRay.d;
-		reflectDir.normalize();
-		
-		reflectedRay.o = recursiveHit.P;
-		reflectedRay.d = reflectDir;
-		// the refractiveIndex of this ray remains unchanged
-
-		hitSomething = scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX );
-
-		numRecursiveCalls++;
+		return Vector3(0,0,0);
 	}
-	while( hitSomething && recursiveHit.material->isSpecular() && numRecursiveCalls < Material::SPECULAR_RECURSION_DEPTH );
 
-	// we maxed out our recursion by hitting a specular surface or we simply didn't hit anything
-	if( !hitSomething || recursiveHit.material->isSpecular() )
-	{
-		return m_kd;
-	}
+	numRecursiveCalls++;
+
+	// direction to last "eye" point reflected across hit surface normal
+	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
+	reflectDir.normalize();
+	
+	Ray reflectedRay;
+	reflectedRay.o = hit.P;
+	reflectedRay.d = reflectDir;
+	reflectedRay.refractiveIndex = ray.refractiveIndex;
+
+	Vector3 L;
+	HitInfo recursiveHit;
+	if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
+		L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
 	else
-	{
-		return m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
-	}
+		L = m_kd;
+
+	// add ambient color
+	L += m_ka;
+
+	// we're about to pop a (potentially) recursive call off the stack
+	numRecursiveCalls--;
+
+	return L;
 }

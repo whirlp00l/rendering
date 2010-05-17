@@ -3,6 +3,8 @@
 #include "Scene.h"
 #include "DebugMem.h"
 
+#include <assert.h>
+
 SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd ) :
 Lambert(kd)
 {
@@ -54,21 +56,76 @@ SpecularRefractor::getRefractiveIndex( RefractiveMaterial material )
 Vector3 
 SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) const
 {
-	const Vector3 viewDir = -ray.d; // d is a unit vector
-    
-    const Lights *lightlist = scene.lights();
-    
-    // loop over all of the lights
-    Lights::const_iterator lightIter;
-    for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
-    {
-		PointLight* pLight = *lightIter;
+	bool hitSomething = false;
+	HitInfo recursiveHit = hit;
+	Ray refractedRay = ray;
+	int numRecursiveCalls = 0;
+	do
+	{
+		bool stop = false;
+		Vector3 viewDir = -refractedRay.d; // d is a unit vector
+		// set up refracted ray here
+		float nDotViewDir = dot( viewDir, recursiveHit.N );
+		float radicand;
+		float refractiveIndexRatio;
+		Vector3 refractDir;
+		// positive dot product means we're entering the refractive material
+		if( nDotViewDir > 0 )
+		{
+			refractiveIndexRatio = refractedRay.refractiveIndex / m_refractive_index;
+			radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
+			// can't take the square root of a negative number
+			if( radicand < 0 ) 
+			{
+				// could perform reflection here instead. for now, just stop the refraction process.
+				stop = true;
+			}
 
-		Vector3 l = pLight->position() - hit.P;
+			refractDir = -refractiveIndexRatio * ( viewDir - nDotViewDir*recursiveHit.N ) - sqrt(radicand)*recursiveHit.N;
+			refractDir.normalize();
 
-		// The term whose square root is being considered is called the radicand -- we want to make sure it isn't negative
-		//float radicand;
+			refractedRay.d = refractDir;
+			refractedRay.o = recursiveHit.P;
+			refractedRay.refractiveIndex = m_refractive_index;
+		}
+		// negative dot product means we're exiting the refractive material
+		else 
+		{
+			refractiveIndexRatio = m_refractive_index / refractedRay.refractiveIndex;
+			// don't need to negate dot product since we're squaring it
+			radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
+			// can't take the square root of a negative number
+			if( radicand < 0 ) 
+			{
+				// could perform reflection here instead. for now, just stop the refraction process.
+				stop = true;
+			}
+
+			refractDir = -refractiveIndexRatio * ( viewDir + nDotViewDir*(-recursiveHit.N) ) - sqrt(radicand)*(-recursiveHit.N);
+			refractDir.normalize();
+
+			refractedRay.d = refractDir;
+			refractedRay.o = recursiveHit.P;
+			refractedRay.refractiveIndex = 1.0f;
+		}
+
+		// make sure we haven't set a halting flag
+		if( stop )
+			hitSomething = false;
+		else
+			hitSomething = scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ); // trace the refracted ray
+
+		numRecursiveCalls++;
 	}
+	while( hitSomething && recursiveHit.material->isSpecular() && numRecursiveCalls < Material::SPECULAR_RECURSION_DEPTH );
 
-	return Vector3(0,0,0);
+	// we maxed out our recursion by hitting a specular surface or we simply didn't hit anything
+	if( !hitSomething || recursiveHit.material->isSpecular() )
+	{
+		return m_kd;
+	}
+	else
+	{
+		return m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+	}
 }

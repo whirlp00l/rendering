@@ -231,7 +231,8 @@ Assignment3::makeTeapot2Scene()
     addMeshTrianglesToScene(mesh, material);
     
     // teapot 2
-	material = new SpecularReflector(Vector3(1.0f));
+	//material = new SpecularRefractor(SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON));
+	material = new SpecularReflector();
     xform.setIdentity();
     xform *= translate(2.0, 0, 3);
     mesh = new TriangleMesh;

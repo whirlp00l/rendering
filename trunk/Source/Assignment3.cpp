@@ -68,7 +68,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		break;
 	case Material::SPECULAR_REFRACTOR:
 		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
-		teapotMaterial = new SpecularRefractor( refractiveIndex );
+		teapotMaterial = new SpecularRefractor( 1.31 );
 		break;
 	}
 
@@ -240,7 +240,8 @@ Assignment3::makeTeapot2Scene()
     
     // teapot 3   
     //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
-	material = new SpecularRefractor(SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON));
+	float index = 1.31;
+	material = new SpecularRefractor(index);
     xform.setIdentity();
     xform *= translate(-2, 0, 4);
     xform *= rotate(45, 0, 1, 0);

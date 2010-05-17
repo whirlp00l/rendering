@@ -56,76 +56,84 @@ SpecularRefractor::getRefractiveIndex( RefractiveMaterial material )
 Vector3 
 SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) const
 {
-	bool hitSomething = false;
-	HitInfo recursiveHit = hit;
-	Ray refractedRay = ray;
-	int numRecursiveCalls = 0;
-	do
+	static int numRecursiveCalls = 0;
+	// we've maxed out our recursion
+	if( numRecursiveCalls == Material::SPECULAR_RECURSION_DEPTH )
 	{
-		bool stop = false;
-		Vector3 viewDir = -refractedRay.d; // d is a unit vector
-		// set up refracted ray here
-		float nDotViewDir = dot( viewDir, recursiveHit.N );
-		float radicand;
-		float refractiveIndexRatio;
-		Vector3 refractDir;
-		// positive dot product means we're entering the refractive material
-		if( nDotViewDir > 0 )
-		{
-			refractiveIndexRatio = refractedRay.refractiveIndex / m_refractive_index;
-			radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
-			// can't take the square root of a negative number
-			if( radicand < 0 ) 
-			{
-				// could perform reflection here instead. for now, just stop the refraction process.
-				stop = true;
-			}
-
-			refractDir = -refractiveIndexRatio * ( viewDir - nDotViewDir*recursiveHit.N ) - sqrt(radicand)*recursiveHit.N;
-			refractDir.normalize();
-
-			refractedRay.d = refractDir;
-			refractedRay.o = recursiveHit.P;
-			refractedRay.refractiveIndex = m_refractive_index;
-		}
-		// negative dot product means we're exiting the refractive material
-		else 
-		{
-			refractiveIndexRatio = m_refractive_index / refractedRay.refractiveIndex;
-			// don't need to negate dot product since we're squaring it
-			radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
-			// can't take the square root of a negative number
-			if( radicand < 0 ) 
-			{
-				// could perform reflection here instead. for now, just stop the refraction process.
-				stop = true;
-			}
-
-			refractDir = -refractiveIndexRatio * ( viewDir + nDotViewDir*(-recursiveHit.N) ) - sqrt(radicand)*(-recursiveHit.N);
-			refractDir.normalize();
-
-			refractedRay.d = refractDir;
-			refractedRay.o = recursiveHit.P;
-			refractedRay.refractiveIndex = 1.0f;
-		}
-
-		// make sure we haven't set a halting flag
-		if( stop )
-			hitSomething = false;
-		else
-			hitSomething = scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ); // trace the refracted ray
-
-		numRecursiveCalls++;
+		return Vector3(0,0,0);
 	}
-	while( hitSomething && recursiveHit.material->isSpecular() && numRecursiveCalls < Material::SPECULAR_RECURSION_DEPTH );
 
-	// we maxed out our recursion by hitting a specular surface or we simply didn't hit anything
-	if( !hitSomething || recursiveHit.material->isSpecular() )
+	numRecursiveCalls++;
+
+	Vector3 viewDir = -ray.d; // d is a unit vector
+	// set up refracted ray here
+	float nDotViewDir = dot( viewDir, hit.N );
+
+	float refractedRayIndex;
+	float n1;
+	float n2;
+	Vector3 normal;
+
+	// we're entering the refracted material
+	if( nDotViewDir > 0 )
 	{
-		return m_kd;
+		n1 = ray.refractiveIndex;
+		n2 = m_refractive_index;
+		normal = hit.N;
+		refractedRayIndex = m_refractive_index;
 	}
+	// we're exiting the refractive material
 	else
 	{
-		return m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+		n1 = m_refractive_index;
+		n2 = ray.refractiveIndex;
+		normal = -hit.N;
+		refractedRayIndex = 1.0f;
 	}
+
+	float refractiveIndexRatio = n1 / n2;
+	float radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
+
+	Vector3 L;
+
+	// can't take the square root of a negative number, so just use reflection instead
+	if( radicand < 0 )
+	{
+		// direction to last "eye" point reflected across hit surface normal
+		Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
+		reflectDir.normalize();
+		
+		Ray reflectedRay;
+		reflectedRay.o = hit.P;
+		reflectedRay.d = reflectDir;
+		reflectedRay.refractiveIndex = ray.refractiveIndex;
+
+		HitInfo recursiveHit;
+		if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
+			L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
+		else
+			L = m_kd;
+	}
+	// use refraction
+	else {
+		Ray refractedRay;
+		Vector3 refractDir = -refractiveIndexRatio * ( viewDir - nDotViewDir*normal ) - sqrt(radicand)*normal;
+		refractDir.normalize();
+
+		refractedRay.d = refractDir;
+		refractedRay.o = hit.P;
+		refractedRay.refractiveIndex = refractedRayIndex;
+
+		HitInfo recursiveHit;
+		// trace the refracted ray
+		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
+			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+		else
+			L = m_kd;
+	}
+
+	L += m_ka;
+	
+	numRecursiveCalls--;
+	return L;
 }

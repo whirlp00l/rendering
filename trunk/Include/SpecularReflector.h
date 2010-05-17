@@ -1,17 +1,13 @@
 #ifndef SPECULAR_REFLECTOR_H
 #define SPECULAR_REFLECTOR_H
 
-#include "Material.h"
+#include "Lambert.h"
 
-class SpecularReflector : public Material
+class SpecularReflector : public Lambert
 {
 public:
 	SpecularReflector( const Vector3 & kd = Vector3(1) );
 	~SpecularReflector();
-
-	const Vector3 & kd() const {return m_kd;}
-
-	void setKd(const Vector3 & kd) {m_kd = kd;}
 
 	virtual void preCalc() {}
     
@@ -19,9 +15,6 @@ public:
                           const Scene& scene) const;
 
 	static const int RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
-
-protected:	
-	Vector3 m_kd;
 };
 
 #endif; // SPECULAR_REFLECTOR_H

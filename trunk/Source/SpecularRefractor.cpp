@@ -3,8 +3,8 @@
 #include "Scene.h"
 #include "DebugMem.h"
 
-SpecularRefractor::SpecularRefractor( float refractiveIndex ) :
-Material()
+SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd ) :
+Lambert(kd)
 {
 	m_refractive_index = refractiveIndex;
 }
@@ -53,5 +53,21 @@ SpecularRefractor::getRefractiveIndex( RefractiveMaterial material )
 Vector3 
 SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) const
 {
+	const Vector3 viewDir = -ray.d; // d is a unit vector
+    
+    const Lights *lightlist = scene.lights();
+    
+    // loop over all of the lights
+    Lights::const_iterator lightIter;
+    for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
+    {
+		PointLight* pLight = *lightIter;
+
+		Vector3 l = pLight->position() - hit.P;
+
+		// The term whose square root is being considered is called the radicand -- we want to make sure it isn't negative
+		//float radicand;
+	}
+
 	return Vector3(0,0,0);
 }

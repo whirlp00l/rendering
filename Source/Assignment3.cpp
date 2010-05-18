@@ -71,7 +71,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		teapotMaterial = new Stone();
 		break;
 	case Material::SPECULAR_REFRACTOR:
-		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
+		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::DIAMOND );
 		teapotMaterial = new SpecularRefractor( refractiveIndex );
 		break;
 	}
@@ -93,8 +93,8 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	//Material* floorMaterial = new Stone();
-	Material * floorMaterial = new Lambert(Vector3(1.0f));
+	Material* floorMaterial = new Stone(Vector3(1,0.5,0));
+	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);
     t->setMesh(floor);

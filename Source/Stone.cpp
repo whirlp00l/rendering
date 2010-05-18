@@ -2,10 +2,13 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
+#include "Perlin.h"
+#include "Worley.h"
 
 const float Stone::THRESHOLD = 0.02f;
 
-Stone::Stone()
+Stone::Stone(const Vector3 & kd) :
+Lambert(kd)
 {
 }
 
@@ -84,7 +87,8 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 			Vector3 result = pLight->color();
 			result *= m_kd;
 	        
-			L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result;
+			float perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
+			L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * (1-pow(perlinNoise,4));
 		}
 	    
 		// add the ambient component

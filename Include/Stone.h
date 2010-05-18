@@ -2,12 +2,11 @@
 #define STONE_H
 
 #include "Lambert.h"
-#include "Worley.h"
 
 class Stone : public Lambert 
 {
 public:
-	Stone();
+	Stone( const Vector3 & kd = Vector3(1) );
 	~Stone();
 
 	Vector3 shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const;

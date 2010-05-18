@@ -12,6 +12,7 @@
 #include "PhongLambert.h"
 #include "SpecularReflector.h"
 #include "SpecularRefractor.h"
+#include "Stone.h"
 
 // local helper function declarations
 namespace
@@ -66,9 +67,12 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	case Material::SPECULAR_REFLECTOR:
 		teapotMaterial = new SpecularReflector();
 		break;
+	case Material::STONE:
+		teapotMaterial = new Stone();
+		break;
 	case Material::SPECULAR_REFRACTOR:
 		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
-		teapotMaterial = new SpecularRefractor( 1.31 );
+		teapotMaterial = new SpecularRefractor( refractiveIndex );
 		break;
 	}
 
@@ -89,7 +93,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	Material* floorMaterial = new Lambert(Vector3(1.0f));
+	Material* floorMaterial = new Stone();
     Triangle* t = new Triangle;
     t->setIndex(0);
     t->setMesh(floor);

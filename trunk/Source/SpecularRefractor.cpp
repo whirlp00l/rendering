@@ -78,17 +78,18 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	if( nDotViewDir > 0 )
 	{
 		n1 = ray.refractiveIndex;
-		n2 = m_refractive_index;
+		n2 = hit.material->getRefractiveIndex();
 		normal = hit.N;
-		refractedRayIndex = m_refractive_index;
+		refractedRayIndex = hit.material->getRefractiveIndex();
 	}
 	// we're exiting the refractive material
 	else
 	{
-		n1 = m_refractive_index;
+		n1 = hit.material->getRefractiveIndex();
 		n2 = ray.refractiveIndex;
 		normal = -hit.N;
 		refractedRayIndex = 1.0f;
+		nDotViewDir *= -1;
 	}
 
 	float refractiveIndexRatio = n1 / n2;
@@ -96,7 +97,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 
 	Vector3 L;
 
-	// can't take the square root of a negative number, so just use reflection instead
+	// total internal refraction: just use reflection instead
 	if( radicand < 0 )
 	{
 		// direction to last "eye" point reflected across hit surface normal
@@ -112,7 +113,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
 			L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
 		else
-			L = m_kd;
+			L = m_kd * Vector3(0.5f);
 	}
 	// use refraction
 	else {
@@ -129,7 +130,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
 			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
 		else
-			L = m_kd;
+			L = m_kd * Vector3(0.5f);
 	}
 
 	L += m_ka;

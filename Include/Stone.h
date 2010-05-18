@@ -2,6 +2,7 @@
 #define STONE_H
 
 #include "Lambert.h"
+#include "CustomizablePerlinNoise.h"
 
 class Stone : public Lambert 
 {
@@ -20,6 +21,7 @@ public:
 protected:
 	static const float THRESHOLD;
 	Coloring mColoring;
+	CustomizablePerlinNoise * mNoiseMaker;
 };
 
 #endif // STONE_H

@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Source\CustomizablePerlinNoise.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Image.cpp"
 				>
 			</File>
@@ -331,6 +335,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\Console.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\CustomizablePerlinNoise.h"
 				>
 			</File>
 			<File

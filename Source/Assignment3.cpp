@@ -13,6 +13,7 @@
 #include "SpecularReflector.h"
 #include "SpecularRefractor.h"
 #include "Stone.h"
+#include "DebugMem.h"
 
 // local helper function declarations
 namespace
@@ -169,7 +170,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	Material* floorMaterial = new Stone(Stone::COLORFUL);
+	Material* floorMaterial = new Stone(Stone::REALISTIC);
 	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);

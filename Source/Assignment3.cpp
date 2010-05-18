@@ -261,13 +261,17 @@ Assignment3::makeCornellScene()
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(35);
     
-    //PointLight * light = new AreaLight(Vector3(0.75,5.51,-4.75), Vector3(4.75,5.51,0.75), 50);
 	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4), 100);
-	//PointLight * light = new PointLight;
     light->setPosition(Vector3(2.75, 5.51, -2.75));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(50);
     g_scene->addLight(light);
+
+	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4), 100);
+	light2->setPosition(Vector3(-2.75, 5.51, 2.75));
+	light2->setColor(Vector3(1, 1, 1));
+    light2->setWattage(50);
+    g_scene->addLight(light2);
     
     Material* material = new Lambert(Vector3(0.5f));
     TriangleMesh * box = new TriangleMesh;

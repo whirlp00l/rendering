@@ -93,7 +93,8 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	Material* floorMaterial = new Stone();
+	//Material* floorMaterial = new Stone();
+	Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);
     t->setMesh(floor);

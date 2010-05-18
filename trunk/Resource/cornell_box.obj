@@ -49,18 +49,18 @@ v 1.32 0 -2.47
 
 #	    Point/Line/Face list
 
-usemtl Cornell_Box_-_White
+usemtl Resource\\white_diffuse
 f 5 8 6
 f 8 7 6
 f 8 4 7
 f 4 3 7
-usemtl Cornell_Box_-_Red
+usemtl Resource\\red_diffuse
 f 3 2 7
 f 7 2 6
-usemtl Cornell_Box_-_Green
+usemtl Resource\\green_diffuse
 f 1 4 8
 f 1 8 5
-usemtl Cornell_Box_-_White
+usemtl Resource\\blue_diffuse
 f 9 1 2
 f 9 4 1
 f 11 4 9

@@ -1,4 +1,5 @@
 #include "PFMLoader.h"
+#include "DebugMem.h"
 #include <stdexcept>
 
 // define this to 1 if you are running on a big-endian machine (e.g. PPC Macs)

@@ -10,10 +10,13 @@ const float Stone::THRESHOLD = 0.02f;
 Stone::Stone(Stone::Coloring coloring, const Vector3 & kd) :
 Lambert(kd), mColoring(coloring)
 {
+	mNoiseMaker = new CustomizablePerlinNoise(4, 4, 1, 94);
 }
 
 Stone::~Stone()
 {
+	delete mNoiseMaker;
+	mNoiseMaker = NULL;
 }
 
 Vector3
@@ -32,9 +35,7 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 	WorleyNoise::noise3D( at, 2, F, delta, ID );
 	float distance = F[1] - F[0];
 	float colorID = ID[0];
-	//while( colorID > 1 )
-	//	colorID /= 2;
-		
+
 	// clean up allocated memory
 	delete [] F;
 	F = NULL;
@@ -88,26 +89,28 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 			// get the diffuse component
 			float nDotL = dot(hit.N, l);
 			Vector3 result = pLight->color();
+			float perlinNoise, red, green, blue; // have to declare all these here to make the compiler happy
 			switch( mColoring )
 			{
+			case COLORFUL:
+				red = std::max( 0.0f, (1 + sin(colorID))/2 );
+				blue = std::max( 0.0f, (1 + cos(colorID))/2 );
+				green = std::max( 0.0f, ( red + blue ) / 2 );
+				result *= Vector3(red,green,blue);
+				perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
+				L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * (1-pow(perlinNoise,2));
+				break;
 			case REALISTIC:
 				result *= m_kd;
-				break;
-			case COLORFUL:
-				float red = std::max( 0.0f, (1 + sin(colorID))/2 );
-				float blue = std::max( 0.0f, (1 + cos(colorID))/2 );
-				float green = std::max( 0.0f, ( red + blue ) / 2 );
-				result *= Vector3(red,green,blue);
+				perlinNoise = (1 + mNoiseMaker->Get( hit.P.x, hit.P.y, hit.P.z )) / 2;
+				L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * perlinNoise;
 				break;
 			}
-	        
-			float perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
-			L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * (1-pow(perlinNoise,2));
 		}
 	    
 		// add the ambient component
 		L += m_ka;
-	    
+
 		return L;
 	}
 }

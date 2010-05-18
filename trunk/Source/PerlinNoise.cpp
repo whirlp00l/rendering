@@ -1,4 +1,5 @@
 #include "PerlinNoise.h"
+#include "DebugMem.h"
 
 const unsigned char PerlinNoise::p[512] =
 {

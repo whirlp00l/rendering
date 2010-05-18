@@ -268,6 +268,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Source\Stone.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Triangle.cpp"
 				>
 			</File>
@@ -407,6 +411,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\Spirograph.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\Stone.h"
 				>
 			</File>
 			<File

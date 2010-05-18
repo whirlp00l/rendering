@@ -2,8 +2,8 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
-#include "Perlin.h"
-#include "Worley.h"
+#include "PerlinNoise.h"
+#include "WorleyNoise.h"
 
 const float Stone::THRESHOLD = 0.02f;
 

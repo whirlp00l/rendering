@@ -43,15 +43,15 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		shadowRay.o = hit.P;
 		HitInfo hitInfo;
 
-		float hitRatio = 1;
-		// we have a shadow!
-		if( scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
+		// we have a (hard) shadow!
+		if( !pLight->isAreaLight() && scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
 		{
-			if( pLight->isAreaLight() )
-				hitRatio = (( AreaLight * )pLight)->getHitRatio( hit.P, scene );
-			else
-				continue;
+			continue;
 		}
+
+		float hitRatio = 1;
+		if( pLight->isAreaLight() )
+			hitRatio = (( AreaLight * )pLight)->getHitRatio( hit.P, scene );
     
         // get the diffuse component
         float nDotL = dot(hit.N, l);

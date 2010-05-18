@@ -10,6 +10,7 @@ public:
 	virtual ~Assignment3();
 
 	void makeCornellScene();
+	void makeCornellSceneWithSpheres();
 	void makeTeapotScene( Material::Type teapotMaterialType );
 	void makeMultipleTeapotsScene();
 	void makeTeapot2Scene();

@@ -1,4 +1,4 @@
-#include "Perlin.h"
+#include "PerlinNoise.h"
 
 const unsigned char PerlinNoise::p[512] =
 {

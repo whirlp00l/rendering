@@ -1,4 +1,4 @@
- #include "Worley.h"
+ #include "WorleyNoise.h"
 #include <math.h>
  
 

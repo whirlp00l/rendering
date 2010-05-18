@@ -366,7 +366,13 @@ namespace
 			Triangle* t = new Triangle;
 			t->setIndex(i);
 			t->setMesh(mesh);
-			t->setMaterial(material); 
+			if( t->getMesh()->materials() && t->getMesh()->materials()[i] )
+			{
+				Material * storedMaterial = t->getMesh()->materials()[i];
+				t->setMaterial( storedMaterial );
+			}
+			else
+				t->setMaterial(material); 
 			g_scene->addObject(t);
 		}
 	}

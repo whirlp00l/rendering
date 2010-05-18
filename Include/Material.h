@@ -31,6 +31,8 @@ public:
 
 	static const int SPECULAR_RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
 
+	static Material * loadMaterial( char * fileName );
+
 protected:
 	Type m_type;
 	float m_refractive_index;

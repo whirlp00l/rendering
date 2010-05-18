@@ -1,6 +1,8 @@
 #include "TriangleMesh.h"
 #include "Console.h"
 #include "DebugMem.h"
+#include "Material.h"
+#include "Lambert.h"
 
 #ifdef WIN32
 // disable useless warnings
@@ -131,6 +133,9 @@ TriangleMesh::loadObj(FILE* fp, const Matrix4x4& ctm)
     }
     m_normalIndices = new TupleI3[nf]; // always make normals
     m_vertexIndices = new TupleI3[nf]; // always have vertices
+	m_materials = new Material*[nf];
+	for( int i = 0; i < nf; i++ )
+		m_materials[i] = NULL;
 
     m_numTris = 0;
     int nvertices = 0;
@@ -141,9 +146,31 @@ TriangleMesh::loadObj(FILE* fp, const Matrix4x4& ctm)
     nctm.invert();
     nctm.transpose();
 
+	Material * material = NULL;
+
     while (fgets(line, 80, fp) != 0)
     {
-        if (line[0] == 'v')
+		char lineCpy[80];
+		strncpy_s( lineCpy, 80, line, _TRUNCATE );
+		char * space = strchr( lineCpy, ' ' );
+		if( space )
+			*space = '\0';
+
+		if( strcmp(lineCpy, "usemtl") == 0 ) 
+		{
+			char * materialFileName = space ? space + 1 : lineCpy;
+			// take care of unix file formats
+			char * newLine = strchr( materialFileName, '\n' );
+			if( newLine )
+				*newLine = '\0';
+			// take care of windows files formats
+			char * carriageReturn = strchr( materialFileName, '\r' );
+			if( carriageReturn )
+				*carriageReturn = '\0';
+
+			material = Material::loadMaterial( materialFileName );
+		}
+        else if (line[0] == 'v')
         {
             if (line[1] == 'n')
             {
@@ -209,6 +236,10 @@ TriangleMesh::loadObj(FILE* fp, const Matrix4x4& ctm)
                 m_normalIndices[nn].z = nn;
                 nn++;
             }
+
+			// if there's a material, add it to this face
+			if( material )
+				m_materials[m_numTris] = material;
 
             m_numTris++;
         } //  else ignore line

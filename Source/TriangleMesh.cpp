@@ -4,6 +4,7 @@
 #include "DebugMem.h"
 
 TriangleMesh::TriangleMesh() :
+	m_materials(0),
     m_normals(0),
     m_vertices(0),
     m_texCoords(0),
@@ -16,6 +17,20 @@ TriangleMesh::TriangleMesh() :
 
 TriangleMesh::~TriangleMesh()
 {
+	if( m_materials )
+	{
+		for( unsigned int i = 0; i < m_numTris; i++ )
+		{
+			if( m_materials[i] )
+			{
+				delete m_materials[i];
+				m_materials = NULL;
+			}
+		}
+		delete [] m_materials;
+		m_materials = NULL;
+	}
+
 	if( m_normals )
 	{
 		delete [] m_normals;

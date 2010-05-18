@@ -2,6 +2,7 @@
 #define CSE168_TRIANGLE_MESH_H_INCLUDED
 
 #include "Matrix4x4.h"
+#include "Material.h"
 
 class TriangleMesh
 {
@@ -31,6 +32,7 @@ public:
         float x, y;
     };
 
+	Material ** materials()  {return m_materials;}
     Vector3* vertices()     {return m_vertices;}
     Vector3* normals()      {return m_normals;}
     TupleI3* vIndices()     {return m_vertexIndices;}
@@ -39,6 +41,8 @@ public:
 
 protected:
     void loadObj(FILE* fp, const Matrix4x4& ctm);
+
+	Material ** m_materials;
 
     Vector3* m_normals;
     Vector3* m_vertices;

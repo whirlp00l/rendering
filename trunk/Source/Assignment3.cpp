@@ -32,6 +32,82 @@ Assignment3::~Assignment3()
 }
 
 void
+Assignment3::makeSphereScene()
+{
+	 g_camera = new Camera;
+    g_scene = new Scene;
+    g_image = new Image;
+    
+    //g_image->resize(128, 128);
+    g_image->resize(512, 512);
+    
+    // set up the camera
+    g_camera->setBGColor(Vector3(0.0f, 0.0f, 0.2f));
+    g_camera->setEye(Vector3(0, 2.5, 5));
+    g_camera->setLookAt(Vector3(0, 0, 0));
+    g_camera->setUp(Vector3(0, 1, 0));
+    g_camera->setFOV(45);
+    
+    // create and place a point light source
+    PointLight * light = new PointLight;
+    light->setPosition(Vector3(10, 20, 10));
+    light->setColor(Vector3(1, 1, 1));
+    light->setWattage(1000);
+    g_scene->addLight(light);
+    
+    TriangleMesh * mesh;  
+    Matrix4x4 xform;
+
+    // sphere 1   
+	Material* material = new SpecularReflector(Vector3(0.0f, 0.0f, 1.0f));
+    xform.setIdentity();
+    xform *= translate(-0.5, 0.5, -0.5);
+    xform *= rotate(25, 0, 0, 0);
+    mesh = new TriangleMesh;
+    mesh->load("Resource\\sphere_high_res.obj", xform);
+    addMeshTrianglesToScene(mesh, material);
+    
+    // sphere 2
+	material = new Lambert(Vector3(1,0,0));
+    xform.setIdentity();
+    xform *= translate(1.0, 0.5, 1.5);
+    mesh = new TriangleMesh;
+    mesh->load("Resource\\sphere_high_res.obj", xform);
+    addMeshTrianglesToScene(mesh, material);
+    
+    // sphere 3   
+    //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
+	float index = SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON);
+	material = new SpecularRefractor(index);
+    xform.setIdentity();
+    xform *= translate(-1, 0.5, 2);
+    xform *= rotate(45, 0, 1, 0);
+    mesh = new TriangleMesh;
+    mesh->load("Resource\\sphere_high_res.obj", xform);
+    addMeshTrianglesToScene(mesh, material);
+    
+    // create the floor triangle
+	material = new Lambert(Vector3(1));
+    mesh = new TriangleMesh;
+    mesh->createSingleTriangle();
+    mesh->setV1(Vector3(-100, 0, -100));
+    mesh->setV2(Vector3(   0, 0,  100));
+    mesh->setV3(Vector3( 100, 0, -100));
+    mesh->setN1(Vector3(0, 1, 0));
+    mesh->setN2(Vector3(0, 1, 0));
+    mesh->setN3(Vector3(0, 1, 0));
+    
+    Triangle* t = new Triangle;
+    t->setIndex(0);
+    t->setMesh(mesh);
+    t->setMaterial(material); 
+    g_scene->addObject(t);
+    
+    // let objects do pre-calculations if needed
+    g_scene->preCalc();
+}
+
+void
 Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 {
     g_camera = new Camera;
@@ -68,7 +144,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		teapotMaterial = new SpecularReflector();
 		break;
 	case Material::STONE:
-		teapotMaterial = new Stone();
+		teapotMaterial = new Stone(Stone::REALISTIC);
 		break;
 	case Material::SPECULAR_REFRACTOR:
 		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::DIAMOND );
@@ -93,7 +169,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	Material* floorMaterial = new Stone(Vector3(1,0.5,0));
+	Material* floorMaterial = new Stone(Stone::COLORFUL);
 	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);

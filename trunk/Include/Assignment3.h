@@ -13,6 +13,7 @@ public:
 	void makeTeapotScene( Material::Type teapotMaterialType );
 	void makeMultipleTeapotsScene();
 	void makeTeapot2Scene();
+	void makeSphereScene();
 };
 
 #endif // CSE168_ASSIGNMENT_3_H_INCLUDED

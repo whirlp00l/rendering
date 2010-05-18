@@ -2,6 +2,7 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
+#include "AreaLight.h"
 
 Lambert::Lambert(const Vector3 & kd, const Vector3 & ka) : 
 m_kd(kd), m_ka(ka)
@@ -41,10 +42,15 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		shadowRay.d = l;
 		shadowRay.o = hit.P;
 		HitInfo hitInfo;
+
+		float hitRatio = 1;
 		// we have a shadow!
 		if( scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
 		{
-			continue;
+			if( pLight->isAreaLight() )
+				hitRatio = (( AreaLight * )pLight)->getHitRatio( hit.P, scene );
+			else
+				continue;
 		}
     
         // get the diffuse component
@@ -52,7 +58,7 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
         Vector3 result = pLight->color();
         result *= m_kd;
         
-        L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result;
+        L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * hitRatio;
     }
     
     // add the ambient component

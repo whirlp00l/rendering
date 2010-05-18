@@ -64,8 +64,8 @@ main(int argc, char*argv[])
 	case 3:
 		// ASSIGNMENT 3
 		assn3 = new Assignment3();
-		//assn3->makeSphereScene();
-		assn3->makeTeapotScene(Material::PHONG_DIFFUSE);
+		assn3->makeCornellScene();
+		//assn3->makeTeapotScene(Material::PHONG_DIFFUSE);
 		delete assn3;
 		assn3 = NULL;
 		break;

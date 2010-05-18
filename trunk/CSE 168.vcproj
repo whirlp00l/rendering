@@ -176,6 +176,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Source\AreaLight.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Assignment0.cpp"
 				>
 			</File>
@@ -297,6 +301,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Include\AreaLight.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Include\Assignment0.h"
 				>

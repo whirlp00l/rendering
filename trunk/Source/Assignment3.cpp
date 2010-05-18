@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Image.h"
 
+#include "AreaLight.h"
 #include "PointLight.h"
 #include "TriangleMesh.h"
 #include "Triangle.h"
@@ -260,8 +261,9 @@ Assignment3::makeCornellScene()
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(35);
     
-    // TODO: replace this point light with the Area light that you implement for Task 3
-    PointLight * light = new PointLight;
+    //PointLight * light = new AreaLight(Vector3(0.75,5.51,-4.75), Vector3(4.75,5.51,0.75), 50);
+	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4), 100);
+	//PointLight * light = new PointLight;
     light->setPosition(Vector3(2.75, 5.51, -2.75));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(50);

@@ -74,6 +74,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	float n2;
 	Vector3 normal;
 
+	bool flipped = false;
 	// we're entering the refracted material
 	if( nDotViewDir > 0 )
 	{
@@ -90,6 +91,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		normal = -hit.N;
 		refractedRayIndex = 1.0f;
 		nDotViewDir *= -1;
+		flipped = true;
 	}
 
 	float refractiveIndexRatio = n1 / n2;
@@ -100,6 +102,10 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	// total internal refraction: just use reflection instead
 	if( radicand < 0 )
 	{
+		// if we've flipped the normal, we're INSIDE the surface. we don't need to shade it in that case.
+		if( flipped )
+			return Vector3(0,0,0);
+
 		// direction to last "eye" point reflected across hit surface normal
 		Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
 		reflectDir.normalize();

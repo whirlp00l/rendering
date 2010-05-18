@@ -45,7 +45,7 @@ Assignment3::makeSphereScene()
     
     // set up the camera
     g_camera->setBGColor(Vector3(0.0f, 0.0f, 0.2f));
-    g_camera->setEye(Vector3(0, 2.5, 5));
+    g_camera->setEye(Vector3(0, 2.5, 10));
     g_camera->setLookAt(Vector3(0, 0, 0));
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(45);
@@ -63,16 +63,16 @@ Assignment3::makeSphereScene()
     // sphere 1   
 	Material* material = new SpecularReflector(Vector3(0.0f, 0.0f, 1.0f));
     xform.setIdentity();
-    xform *= translate(-0.5, 0.5, -0.5);
-    xform *= rotate(25, 0, 0, 0);
+    xform *= translate(-1.0, 1.0, -0.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
     addMeshTrianglesToScene(mesh, material);
     
     // sphere 2
-	material = new Lambert(Vector3(1,0,0));
+	//material = new Lambert(Vector3(1,0,0));
+	material = new SpecularReflector(Vector3(1.0f, 0.0f, 1.0f));
     xform.setIdentity();
-    xform *= translate(1.0, 0.5, 1.5);
+    xform *= translate(1.5, 1, 1.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
     addMeshTrianglesToScene(mesh, material);
@@ -82,8 +82,7 @@ Assignment3::makeSphereScene()
 	float index = SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON);
 	material = new SpecularRefractor(index);
     xform.setIdentity();
-    xform *= translate(-1, 0.5, 2);
-    xform *= rotate(45, 0, 1, 0);
+    xform *= translate(-1.5, 1, 2);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
     addMeshTrianglesToScene(mesh, material);
@@ -261,13 +260,13 @@ Assignment3::makeCornellScene()
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(35);
     
-	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4), 100);
+	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
     light->setPosition(Vector3(2.75, 5.51, -2.75));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(50);
     g_scene->addLight(light);
 
-	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4), 100);
+	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
 	light2->setPosition(Vector3(-2.75, 5.51, 2.75));
 	light2->setColor(Vector3(1, 1, 1));
     light2->setWattage(50);
@@ -277,6 +276,62 @@ Assignment3::makeCornellScene()
     TriangleMesh * box = new TriangleMesh;
     box->load("Resource\\cornell_box.obj");
     addMeshTrianglesToScene(box, material);
+
+    // let objects do pre-calculations if needed
+    g_scene->preCalc();
+}
+
+void
+Assignment3::makeCornellSceneWithSpheres()
+{
+    g_camera = new Camera;
+    g_scene = new Scene;
+    g_image = new Image;
+    
+    g_image->resize(512, 512);
+    
+    // set up the camera
+    g_camera->setBGColor(Vector3(0.0f, 0.0f, 0.2f));
+    g_camera->setEye(Vector3(2.75, 2.75, 8.75));
+    g_camera->setLookAt(Vector3(2.75, 2.75, 0));
+    g_camera->setUp(Vector3(0, 1, 0));
+    g_camera->setFOV(35);
+    
+	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
+    light->setPosition(Vector3(2.75, 5.49, -2.75));
+    light->setColor(Vector3(1, 1, 1));
+    light->setWattage(50);
+    g_scene->addLight(light);
+
+	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
+	light2->setPosition(Vector3(-2.75, 5.49, 2.75));
+	light2->setColor(Vector3(1, 1, 1));
+    light2->setWattage(50);
+    g_scene->addLight(light2);
+    
+    Material* material = new Lambert(Vector3(0.5f));
+    TriangleMesh * box = new TriangleMesh;
+    box->load("Resource\\empty_cornell_box.obj");
+    addMeshTrianglesToScene(box, material);
+
+	TriangleMesh * mesh;
+	Matrix4x4 xform;
+
+	// sphere 1   
+	material = new SpecularReflector(Vector3(1.0f));
+    xform.setIdentity();
+    xform *= translate(1.5, 1.0, -3.5);
+    mesh = new TriangleMesh;
+    mesh->load("Resource\\sphere_high_res.obj", xform);
+    addMeshTrianglesToScene(mesh, material);
+    
+    // sphere 2
+	material = new Lambert(Vector3(0.75,0,1.0));
+    xform.setIdentity();
+    xform *= translate(4.0, 1.0, -1.5);
+    mesh = new TriangleMesh;
+    mesh->load("Resource\\sphere_high_res.obj", xform);
+    addMeshTrianglesToScene(mesh, material);
 
     // let objects do pre-calculations if needed
     g_scene->preCalc();

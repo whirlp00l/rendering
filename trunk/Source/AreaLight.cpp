@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-AreaLight::AreaLight( const Vector3 & min, const Vector3 & max, unsigned int numSamples ) :
-PointLight(), m_min(min), m_max(max), m_num_samples(numSamples), m_samples(NULL)
+unsigned int AreaLight::NUM_SAMPLES = 80;
+
+AreaLight::AreaLight( const Vector3 & min, const Vector3 & max ) :
+PointLight(), m_min(min), m_max(max), m_samples(NULL)
 {
 	m_type = PointLight::AREA_LIGHT;
 	m_position = (m_min + m_max) / 2;
@@ -43,7 +45,7 @@ AreaLight::getHitRatio( Vector3 hitPoint, const Scene& scene )
 	assert( m_samples );
 
 	int numHits = 0;
-	for( unsigned int i = 0; i < m_num_samples; i++ )
+	for( unsigned int i = 0; i < NUM_SAMPLES; i++ )
 	{
 		Ray sampleRay;
 
@@ -57,20 +59,20 @@ AreaLight::getHitRatio( Vector3 hitPoint, const Scene& scene )
 			numHits++;
 	}
 
-	return ( m_num_samples - numHits ) / ( float )m_num_samples;
+	return ( NUM_SAMPLES - numHits ) / ( float )NUM_SAMPLES;
 }
 
 void
 AreaLight::preCalc()
 {
-	m_samples = new Vector3[m_num_samples];
+	m_samples = new Vector3[NUM_SAMPLES];
 
 	float xRange = m_max.x - m_min.x;
 	float yRange = m_max.y - m_min.y;
 	float zRange = m_max.z - m_min.z;
 
 	srand(time(0));
-	for( unsigned int i = 0; i < m_num_samples; i++ )
+	for( unsigned int i = 0; i < NUM_SAMPLES; i++ )
 	{
 		float x, y, z, random;
 		

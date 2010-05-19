@@ -64,7 +64,7 @@ main(int argc, char*argv[])
 	case 3:
 		// ASSIGNMENT 3
 		assn3 = new Assignment3();
-		assn3->makeCornellScene();
+		assn3->make3TeapotsScene();
 		//assn3->makeTeapotScene(Material::SPECULAR_REFRACTOR);
 		delete assn3;
 		assn3 = NULL;

@@ -338,7 +338,7 @@ Assignment3::makeCornellSceneWithSpheres()
 }
 
 void
-Assignment3::makeTeapot2Scene()
+Assignment3::make3TeapotsScene()
 {
     g_camera = new Camera;
     g_scene = new Scene;
@@ -383,7 +383,7 @@ Assignment3::makeTeapot2Scene()
     
     // teapot 3   
     //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
-	float index = 1.31;
+	float index = SpecularRefractor::getRefractiveIndex( SpecularRefractor::DIAMOND );
 	material = new SpecularRefractor(index);
     xform.setIdentity();
     xform *= translate(-2, 0, 4);

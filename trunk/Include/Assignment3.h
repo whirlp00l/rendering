@@ -13,7 +13,7 @@ public:
 	void makeCornellSceneWithSpheres();
 	void makeTeapotScene( Material::Type teapotMaterialType );
 	void makeMultipleTeapotsScene();
-	void makeTeapot2Scene();
+	void make3TeapotsScene();
 	void makeSphereScene();
 };
 

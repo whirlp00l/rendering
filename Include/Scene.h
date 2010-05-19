@@ -9,6 +9,9 @@
 class Camera;
 class Image;
 
+#define USE_ENVIRONMENT_MAP 0
+#define ENVIRONMENT_MAP_FILE_NAME "Resource\\grace_probe.pfm"
+
 class Scene
 {
 public:
@@ -20,6 +23,10 @@ public:
 
     void addLight(PointLight* pObj)     {m_lights.push_back(pObj);}
     const Lights* lights() const        {return &m_lights;}
+
+	const Vector3* environmentMap() const {return m_environment_map;}
+	const int mapWidth() const {return m_map_width;}
+	const int mapHeight() const {return m_map_height;}
 
     void preCalc();
     void openGL(Camera *cam);
@@ -33,6 +40,9 @@ protected:
     BVH m_bvh;
     Lights m_lights;
 	int m_num_rays_traced;
+	Vector3 * m_environment_map;
+	int m_map_width;
+	int m_map_height;
 };
 
 extern Scene * g_scene;

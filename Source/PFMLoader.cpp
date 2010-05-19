@@ -41,7 +41,7 @@ inline void bigEndianFloat(float& f) {byteSwapFloat(f);}
 
 
 Vector3*
-readPFMImage(const char * filename, int * width, int * height)
+PFMLoader::readPFMImage(const char * filename, int * width, int * height)
 {
     FILE *infile = 0;
     float *lineBuffer = 0;

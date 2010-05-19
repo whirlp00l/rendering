@@ -2,6 +2,7 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
+#include "EnvironmentMap.h"
 
 #include <assert.h>
 
@@ -41,7 +42,16 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 	if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
 		L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
 	else
-		L = m_kd;
+	{
+		if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
+		{
+			L = EnvironmentMap::lookUp( reflectedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+		}
+		else
+		{
+			L = m_kd;
+		}
+	}
 
 	// add in the phong highlights (if necessary)
 	if( m_phong_exp != 0 )

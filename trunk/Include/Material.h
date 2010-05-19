@@ -13,7 +13,6 @@ public:
 	enum Type
 	{
 		DIFFUSE,
-		PHONG_DIFFUSE,
 		SPECULAR_REFLECTOR,
 		SPECULAR_REFRACTOR,
 		STONE,
@@ -21,6 +20,10 @@ public:
 	};
 
     virtual void preCalc() {}
+
+	const float & phongExp() const {return m_phong_exp;}
+
+	void setPhongExp(const float & phongExp) {m_phong_exp = phongExp;}
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
@@ -36,6 +39,7 @@ public:
 protected:
 	Type m_type;
 	float m_refractive_index;
+	float m_phong_exp;
 };
 
 #endif // CSE168_MATERIAL_H_INCLUDED

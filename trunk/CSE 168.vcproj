@@ -252,10 +252,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Source\PhongLambert.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Source\Scene.cpp"
 				>
 			</File>
@@ -395,10 +391,6 @@
 			</File>
 			<File
 				RelativePath=".\Include\PFMLoader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Include\PhongLambert.h"
 				>
 			</File>
 			<File

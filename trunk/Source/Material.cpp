@@ -7,6 +7,7 @@ const int Material::SPECULAR_RECURSION_DEPTH = 20;
 
 Material::Material()
 {
+	m_phong_exp = 0.0f;
 	m_refractive_index = 1.0f;
 	m_type = Material::UNDEFINED;
 }

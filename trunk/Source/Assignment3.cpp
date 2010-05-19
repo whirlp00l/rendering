@@ -138,20 +138,19 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	case Material::DIFFUSE:
 		teapotMaterial = new Lambert( Vector3(1,0,0) );
 		break;
-	case Material::PHONG_DIFFUSE:
-		teapotMaterial = new PhongLambert( Vector3(1,0,0) );
-		break;
 	case Material::SPECULAR_REFLECTOR:
 		teapotMaterial = new SpecularReflector();
 		break;
 	case Material::STONE:
-		teapotMaterial = new Stone(Stone::REALISTIC);
+		teapotMaterial = new Stone(Stone::COLORFUL);
 		break;
 	case Material::SPECULAR_REFRACTOR:
-		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::DIAMOND );
+		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
 		teapotMaterial = new SpecularRefractor( refractiveIndex );
 		break;
 	}
+
+	teapotMaterial->setPhongExp( 50.0f );
 
     TriangleMesh * teapot = new TriangleMesh;
 	Matrix4x4 transform;
@@ -383,8 +382,9 @@ Assignment3::make3TeapotsScene()
     
     // teapot 3   
     //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
-	float index = SpecularRefractor::getRefractiveIndex( SpecularRefractor::DIAMOND );
+	float index = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
 	material = new SpecularRefractor(index);
+	material->setPhongExp( 50 );
     xform.setIdentity();
     xform *= translate(-2, 0, 4);
     xform *= rotate(45, 0, 1, 0);

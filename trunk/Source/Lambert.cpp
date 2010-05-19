@@ -5,9 +5,10 @@
 #include "AreaLight.h"
 
 Lambert::Lambert(const Vector3 & kd, const Vector3 & ka, const float & phongExp) : 
-m_kd(kd), m_ka(ka), m_phong_exp(phongExp)
+m_kd(kd), m_ka(ka)
 {
 	m_type = Material::DIFFUSE;
+	m_phong_exp = phongExp;
 }
 
 Lambert::~Lambert()

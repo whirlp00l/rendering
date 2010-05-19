@@ -144,12 +144,12 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		teapotMaterial = new Stone(Stone::COLORFUL, 10);
 		break;
 	case Material::SPECULAR_REFRACTOR:
-		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );
+		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::WATER_20_C );
 		teapotMaterial = new SpecularRefractor( refractiveIndex );
 		break;
 	}
 
-	teapotMaterial->setPhongExp( 50.0f );
+	//teapotMaterial->setPhongExp( 50.0f );
 
     TriangleMesh * teapot = new TriangleMesh;
 	Matrix4x4 transform;
@@ -388,7 +388,7 @@ Assignment3::make3TeapotsScene()
     addMeshTrianglesToScene(mesh, material);
     
     // create the floor triangle
-	material = new Lambert(Vector3(1));
+	material = new Stone(Stone::COLORFUL, 2);
     mesh = new TriangleMesh;
     mesh->createSingleTriangle();
     mesh->setV1(Vector3(-100, 0, -100));

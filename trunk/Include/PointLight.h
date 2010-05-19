@@ -9,7 +9,7 @@ class PointLight
 public:
 	PointLight() { m_type = PointLight::POINT_LIGHT; }
 	~PointLight() {}
-    virtual void setPosition(const Vector3& v)  {m_position = v;}
+    void setPosition(const Vector3& v)  {m_position = v;}
     void setColor(const Vector3& v)     {m_color = v;}
     void setWattage(float f)            {m_wattage = f;}
     

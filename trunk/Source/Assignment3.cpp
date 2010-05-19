@@ -10,7 +10,6 @@
 #include "TriangleMesh.h"
 #include "Triangle.h"
 #include "Lambert.h"
-#include "PhongLambert.h"
 #include "SpecularReflector.h"
 #include "SpecularRefractor.h"
 #include "Stone.h"
@@ -259,14 +258,12 @@ Assignment3::makeCornellScene()
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(35);
     
-	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
-    light->setPosition(Vector3(2.75, 5.51, -2.75));
+	PointLight * light = new AreaLight(Vector3(2.75, 5.51, 2.5), Vector3(0,0,4), Vector3(4,0,0));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(50);
     g_scene->addLight(light);
 
-	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
-	light2->setPosition(Vector3(-2.75, 5.51, 2.75));
+	PointLight * light2 = new AreaLight(Vector3(4.75, 5.51, 5), Vector3(0,0,4), Vector3(4,0,0));
 	light2->setColor(Vector3(1, 1, 1));
     light2->setWattage(50);
     g_scene->addLight(light2);
@@ -296,14 +293,12 @@ Assignment3::makeCornellSceneWithSpheres()
     g_camera->setUp(Vector3(0, 1, 0));
     g_camera->setFOV(35);
     
-	PointLight * light = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
-    light->setPosition(Vector3(2.75, 5.49, -2.75));
+	PointLight * light = new AreaLight(Vector3(2.75, 5.51, 2.5), Vector3(0,0,4), Vector3(4,0,0));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(50);
     g_scene->addLight(light);
 
-	PointLight * light2 = new AreaLight(Vector3(0,0,0), Vector3(4,0,4));
-	light2->setPosition(Vector3(-2.75, 5.49, 2.75));
+	PointLight * light2 = new AreaLight(Vector3(4.75, 5.51, 5), Vector3(0,0,4), Vector3(4,0,0));
 	light2->setColor(Vector3(1, 1, 1));
     light2->setWattage(50);
     g_scene->addLight(light2);

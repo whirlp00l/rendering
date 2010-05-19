@@ -97,6 +97,10 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	float refractiveIndexRatio = n1 / n2;
 	float radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
 
+	// direction to last "eye" point reflected across hit surface normal
+	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
+	reflectDir.normalize();
+
 	Vector3 L;
 
 	// total internal refraction: just use reflection instead
@@ -109,10 +113,6 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 			return Vector3(0,0,0);
 		}
 
-		// direction to last "eye" point reflected across hit surface normal
-		Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
-		reflectDir.normalize();
-		
 		Ray reflectedRay;
 		reflectedRay.o = hit.P;
 		reflectedRay.d = reflectDir;
@@ -140,6 +140,28 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
 		else
 			L = m_kd * Vector3(0.5f);
+	}
+
+
+	// add in the phong highlights (if necessary)
+	if( m_phong_exp != 0 )
+	{
+		const Lights *lightlist = scene.lights();
+    
+		// loop over all of the lights
+		Lights::const_iterator lightIter;
+		for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
+		{
+			PointLight* pLight = *lightIter;
+
+			Vector3 l = pLight->position() - hit.P;
+			l.normalize();
+
+			Vector3 lightReflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+			float viewDirDotReflectDir = dot( viewDir, lightReflectDir );
+			if( viewDirDotReflectDir > 0 )
+				L += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();
+		}
 	}
 
 	L += m_ka;

@@ -142,7 +142,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 		teapotMaterial = new SpecularReflector();
 		break;
 	case Material::STONE:
-		teapotMaterial = new Stone(Stone::COLORFUL);
+		teapotMaterial = new Stone(Stone::COLORFUL, 10);
 		break;
 	case Material::SPECULAR_REFRACTOR:
 		float refractiveIndex = SpecularRefractor::getRefractiveIndex( SpecularRefractor::GLASS_COMMON );

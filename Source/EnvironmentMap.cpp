@@ -22,7 +22,7 @@ EnvironmentMap::lookUp( Vector3 direction, const Vector3 * map, int mapWidth, in
 	assert( mapWidthIdx < mapWidth );
 	assert( mapHeightIdx < mapHeight );
 
-	return map[mapWidthIdx * mapHeightIdx + mapWidthIdx];
+	return map[mapWidth * mapHeightIdx + mapWidthIdx];
 }
 
 float 

@@ -152,7 +152,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		{
 			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
 			{
-				L = EnvironmentMap::lookUp( refractedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+				L = m_kd * EnvironmentMap::lookUp( refractedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
 			}
 			else
 			{

@@ -9,8 +9,8 @@
 class Camera;
 class Image;
 
-#define USE_ENVIRONMENT_MAP 0
-#define ENVIRONMENT_MAP_FILE_NAME "Resource\\grace_probe.pfm"
+#define USE_ENVIRONMENT_MAP 1
+#define ENVIRONMENT_MAP_FILE_NAME "Resource\\galileo_probe.pfm"
 
 class Scene
 {

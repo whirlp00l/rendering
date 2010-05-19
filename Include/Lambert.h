@@ -7,12 +7,15 @@ class Lambert : public Material
 {
 public:
     Lambert(const Vector3 & kd = Vector3(1),
-            const Vector3 & ka = Vector3(0));
+            const Vector3 & ka = Vector3(0),
+			const float & phongExp = 0);
     virtual ~Lambert();
 
     const Vector3 & kd() const {return m_kd;}
     const Vector3 & ka() const {return m_ka;}
+	const float & phongExp() const {return m_phong_exp;}
 
+	void setPhongExp(const float & phongExp) {m_phong_exp = phongExp;}
     void setKd(const Vector3 & kd) {m_kd = kd;}
     void setKa(const Vector3 & ka) {m_ka = ka;}
 
@@ -23,6 +26,7 @@ public:
 protected:
     Vector3 m_kd;
     Vector3 m_ka;
+	float m_phong_exp;
 };
 
 #endif // CSE168_LAMBERT_H_INCLUDED

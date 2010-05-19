@@ -4,8 +4,8 @@
 #include "DebugMem.h"
 #include "AreaLight.h"
 
-Lambert::Lambert(const Vector3 & kd, const Vector3 & ka) : 
-m_kd(kd), m_ka(ka)
+Lambert::Lambert(const Vector3 & kd, const Vector3 & ka, const float & phongExp) : 
+m_kd(kd), m_ka(ka), m_phong_exp(phongExp)
 {
 	m_type = Material::DIFFUSE;
 }
@@ -59,6 +59,16 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
         result *= m_kd;
         
         L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * hitRatio;
+
+		if( m_phong_exp != 0 )
+		{
+			// now calculate phong highlight
+			Vector3 reflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+			reflectDir.normalize();
+			float viewDirDotReflectDir = dot( viewDir, reflectDir );
+			if( viewDirDotReflectDir > 0 )
+				L += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();
+		}
     }
     
     // add the ambient component

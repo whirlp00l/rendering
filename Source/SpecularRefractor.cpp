@@ -87,7 +87,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	else
 	{
 		n1 = hit.material->getRefractiveIndex();
-		n2 = ray.refractiveIndex;
+		n2 = 1.0f; // assume we're entering air
 		normal = -hit.N;
 		refractedRayIndex = 1.0f;
 		nDotViewDir *= -1;
@@ -104,7 +104,10 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	{
 		// if we've flipped the normal, we're INSIDE the surface. we don't need to shade it in that case.
 		if( flipped )
+		{
+			numRecursiveCalls--;
 			return Vector3(0,0,0);
+		}
 
 		// direction to last "eye" point reflected across hit surface normal
 		Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;

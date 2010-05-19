@@ -7,18 +7,17 @@
 class AreaLight : public PointLight
 {
 public:
-	AreaLight( const Vector3& min, const Vector3& max );
+	AreaLight( const Vector3& position, const Vector3& axis1, const Vector3& axis2 );
 	~AreaLight();
 
-	virtual void setPosition(const Vector3& v);
 	float getHitRatio( Vector3 hitPoint, const Scene& scene );
 	virtual void preCalc(); // we'll use this to construct our light sample points
 
 	static unsigned int NUM_SAMPLES;
 
 protected:
-	Vector3 m_min;
-	Vector3 m_max;
+	Vector3 m_axis1;
+	Vector3 m_axis2;
 	Vector3 * m_samples;
 };
 

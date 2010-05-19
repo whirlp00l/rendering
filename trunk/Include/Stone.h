@@ -13,7 +13,7 @@ public:
 		COLORFUL
 	};
 
-	Stone( Stone::Coloring coloring, const Vector3 & kd = Vector3(1) );
+	Stone( Stone::Coloring coloring, float noiseMultiplier = 1.0f, const Vector3 & kd = Vector3(1) );
 	~Stone();
 
 	Vector3 shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const;
@@ -21,6 +21,7 @@ public:
 protected:
 	static const float THRESHOLD;
 	Coloring mColoring;
+	float mNoiseMultiplier;
 	CustomizablePerlinNoise * mNoiseMaker;
 };
 

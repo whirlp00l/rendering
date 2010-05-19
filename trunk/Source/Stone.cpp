@@ -7,8 +7,8 @@
 
 const float Stone::THRESHOLD = 0.02f;
 
-Stone::Stone(Stone::Coloring coloring, const Vector3 & kd) :
-Lambert(kd), mColoring(coloring)
+Stone::Stone(Stone::Coloring coloring, float noiseMultiplier, const Vector3 & kd) :
+Lambert(kd), mColoring(coloring), mNoiseMultiplier(noiseMultiplier)
 {
 	mNoiseMaker = new CustomizablePerlinNoise(4, 4, 1, 94);
 }
@@ -27,9 +27,10 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 	unsigned long * ID = new unsigned long[2];
 
 	float * at = new float[3];
-	at[0] = hit.P.x;
-	at[1] = hit.P.y;
-	at[2] = hit.P.z;
+
+	at[0] = hit.P.x * mNoiseMultiplier;
+	at[1] = hit.P.y * mNoiseMultiplier;
+	at[2] = hit.P.z * mNoiseMultiplier;
 
 	// use Worley noise function to create our texture
 	WorleyNoise::noise3D( at, 2, F, delta, ID );

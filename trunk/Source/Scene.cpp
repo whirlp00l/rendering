@@ -3,14 +3,16 @@
 #include "Camera.h"
 #include "Image.h"
 #include "Console.h"
+#include "PFMLoader.h"
 #include "DebugMem.h"
+#include "EnvironmentMap.h"
 
 #include <windows.h>
 #include <time.h>
 
 Scene * g_scene = 0;
 
-Scene::Scene()
+Scene::Scene() : m_environment_map(0), m_map_width(0), m_map_height(0)
 {
 	m_num_rays_traced = 0;
 }
@@ -56,6 +58,12 @@ Scene::openGL(Camera *cam)
 void
 Scene::preCalc()
 {
+	// we are using an environment map!
+	if( USE_ENVIRONMENT_MAP )
+	{
+		m_environment_map = PFMLoader::readPFMImage( ENVIRONMENT_MAP_FILE_NAME, &m_map_width, &m_map_height );
+	}
+
     Objects::iterator it;
     for (it = m_objects.begin(); it != m_objects.end(); it++)
     {
@@ -103,6 +111,14 @@ Scene::raytraceImage(Camera *cam, Image *img)
                 shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
                 img->setPixel(i, j, shadeResult);
             }
+			else
+			{
+				if( USE_ENVIRONMENT_MAP && this->environmentMap() )
+				{
+					shadeResult = EnvironmentMap::lookUp( ray.d, this->environmentMap(), this->mapWidth(), this->mapHeight() );
+					img->setPixel(i, j, shadeResult);
+				}
+			}
         }
 
         img->drawScanline(j);

@@ -2,6 +2,7 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
+#include "EnvironmentMap.h"
 
 #include <assert.h>
 
@@ -122,7 +123,16 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
 			L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
 		else
-			L = m_kd * Vector3(0.5f);
+		{
+			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
+			{
+				L = EnvironmentMap::lookUp( reflectedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+			}
+			else
+			{
+				L = m_kd * Vector3(0.5f);
+			}
+		}
 	}
 	// use refraction
 	else {
@@ -139,7 +149,16 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
 			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
 		else
-			L = m_kd * Vector3(0.5f);
+		{
+			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
+			{
+				L = EnvironmentMap::lookUp( refractedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+			}
+			else
+			{
+				L = m_kd * Vector3(0.5f);
+			}
+		}
 	}
 
 

@@ -3,6 +3,10 @@
 
 #include "Vector3.h"
 
-Vector3* readPFMImage(const char * filename, int * width, int * height);
+class PFMLoader
+{
+public:
+	static Vector3* readPFMImage(const char * filename, int * width, int * height);
+};
 
 #endif // CSE168_PFM_LOADER_H_INCLUDED

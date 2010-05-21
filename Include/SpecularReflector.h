@@ -13,6 +13,9 @@ public:
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
+
+protected:
+	Vector3 getReflectedColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
 };
 
 #endif; // SPECULAR_REFLECTOR_H

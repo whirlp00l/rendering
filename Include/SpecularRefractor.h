@@ -1,9 +1,9 @@
 #ifndef SPECULAR_REFRACTOR_H
 #define SPECULAR_REFRACTOR_H
 
-#include "Lambert.h"
+#include "SpecularReflector.h"
 
-class SpecularRefractor : public Lambert
+class SpecularRefractor : public SpecularReflector
 {
 public:
 	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd = Vector3(1) );

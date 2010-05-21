@@ -7,7 +7,7 @@
 #include <assert.h>
 
 SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd ) :
-Lambert(kd)
+SpecularReflector(kd)
 {
 	m_refractive_index = refractiveIndex;
 	m_type = Material::SPECULAR_REFRACTOR;
@@ -98,10 +98,6 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	float refractiveIndexRatio = n1 / n2;
 	float radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
 
-	// direction to last "eye" point reflected across hit surface normal
-	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
-	reflectDir.normalize();
-
 	Vector3 L;
 
 	// total internal refraction: just use reflection instead
@@ -114,25 +110,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 			return Vector3(0,0,0);
 		}
 
-		Ray reflectedRay;
-		reflectedRay.o = hit.P;
-		reflectedRay.d = reflectDir;
-		reflectedRay.refractiveIndex = ray.refractiveIndex;
-
-		HitInfo recursiveHit;
-		if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
-			L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
-		else
-		{
-			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
-			{
-				L = EnvironmentMap::lookUp( reflectedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
-			}
-			else
-			{
-				L = m_kd * Vector3(0.5f);
-			}
-		}
+		L = getReflectedColor( ray, hit, scene );
 	}
 	// use refraction
 	else {

@@ -28,30 +28,7 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 
 	numRecursiveCalls++;
 
-	// direction to last "eye" point reflected across hit surface normal
-	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
-	reflectDir.normalize();
-	
-	Ray reflectedRay;
-	reflectedRay.o = hit.P;
-	reflectedRay.d = reflectDir;
-	reflectedRay.refractiveIndex = ray.refractiveIndex;
-
-	Vector3 L;
-	HitInfo recursiveHit;
-	if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
-		L = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
-	else
-	{
-		if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
-		{
-			L = m_kd * EnvironmentMap::lookUp( reflectedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
-		}
-		else
-		{
-			L = m_kd;
-		}
-	}
+	Vector3 L = getReflectedColor( ray, hit, scene );
 
 	// add in the phong highlights (if necessary)
 	if( m_phong_exp != 0 )
@@ -66,4 +43,35 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 	numRecursiveCalls--;
 
 	return L;
+}
+
+Vector3 
+SpecularReflector::getReflectedColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+{
+	// direction to last "eye" point reflected across hit surface normal
+	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
+	reflectDir.normalize();
+	
+	Ray reflectedRay;
+	reflectedRay.o = hit.P;
+	reflectedRay.d = reflectDir;
+	reflectedRay.refractiveIndex = ray.refractiveIndex;
+
+	HitInfo recursiveHit;
+	Vector3 reflectedLight(0,0,0);
+	if( scene.trace( recursiveHit, reflectedRay, epsilon, MIRO_TMAX ) )
+		reflectedLight = m_kd * recursiveHit.material->shade( reflectedRay, recursiveHit, scene );
+	else
+	{
+		if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
+		{
+			reflectedLight = EnvironmentMap::lookUp( reflectedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+		}
+		else
+		{
+			reflectedLight = m_kd * Vector3(0.5f);
+		}
+	}
+
+	return reflectedLight;
 }

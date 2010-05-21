@@ -66,6 +66,58 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 
 	numRecursiveCalls++;
 
+	Ray refractedRay;
+	bool useRefraction = getRefractedRay( refractedRay, ray, hit, scene );
+
+	Vector3 L;
+
+	// use refraction
+	if( useRefraction )
+	{
+		HitInfo recursiveHit;
+		// trace the refracted ray
+		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
+			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+		else
+		{
+			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
+			{
+				L = m_kd * EnvironmentMap::lookUp( refractedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
+			}
+			else
+			{
+				L = m_kd * Vector3(0.5f);
+			}
+		}
+	}
+	// total internal refraction: just use reflection instead
+	else
+	{
+		// if we're INSIDE the surface. we don't need to shade it in that case.
+		if( dot( ray.d, hit.N ) > 0 )
+		{
+			numRecursiveCalls--;
+			return Vector3(0,0,0);
+		}
+
+		L = getReflectedColor( ray, hit, scene );
+	}
+
+	// add in the phong highlights (if necessary)
+	if( m_phong_exp != 0 )
+	{
+		L += getPhongHighlightContribution( ray, hit, scene );
+	}
+
+	L += m_ka;
+	
+	numRecursiveCalls--;
+	return L;
+}
+
+bool 
+SpecularRefractor::getRefractedRay( Ray& refractedRay, const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+{
 	Vector3 viewDir = -ray.d; // d is a unit vector
 	// set up refracted ray here
 	float nDotViewDir = dot( viewDir, hit.N );
@@ -97,57 +149,18 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 
 	float refractiveIndexRatio = n1 / n2;
 	float radicand = 1 - ( refractiveIndexRatio * refractiveIndexRatio ) * ( 1 - ( nDotViewDir * nDotViewDir ) );
-
-	Vector3 L;
-
-	// total internal refraction: just use reflection instead
-	if( radicand < 0 )
-	{
-		// if we've flipped the normal, we're INSIDE the surface. we don't need to shade it in that case.
-		if( flipped )
-		{
-			numRecursiveCalls--;
-			return Vector3(0,0,0);
-		}
-
-		L = getReflectedColor( ray, hit, scene );
-	}
-	// use refraction
-	else {
-		Ray refractedRay;
-		Vector3 refractDir = -refractiveIndexRatio * ( viewDir - nDotViewDir*normal ) - sqrt(radicand)*normal;
-		refractDir.normalize();
-
-		refractedRay.d = refractDir;
-		refractedRay.o = hit.P;
-		refractedRay.refractiveIndex = refractedRayIndex;
-
-		HitInfo recursiveHit;
-		// trace the refracted ray
-		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
-			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
-		else
-		{
-			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )
-			{
-				L = m_kd * EnvironmentMap::lookUp( refractedRay.d, scene.environmentMap(), scene.mapWidth(), scene.mapHeight() );
-			}
-			else
-			{
-				L = m_kd * Vector3(0.5f);
-			}
-		}
-	}
-
-
-	// add in the phong highlights (if necessary)
-	if( m_phong_exp != 0 )
-	{
-		L += getPhongHighlightContribution( ray, hit, scene );
-	}
-
-	L += m_ka;
 	
-	numRecursiveCalls--;
-	return L;
+	// can't take the square root of a negative number, so refraction is impossible.
+	// this signifies total internal reflection.
+	if( radicand < 0 )
+		return false;
+
+	Vector3 refractDir = -refractiveIndexRatio * ( viewDir - nDotViewDir*normal ) - sqrt(radicand)*normal;
+	refractDir.normalize();
+
+	refractedRay.d = refractDir;
+	refractedRay.o = hit.P;
+	refractedRay.refractiveIndex = refractedRayIndex;
+
+	return true;
 }

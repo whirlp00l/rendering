@@ -10,7 +10,7 @@ class Camera;
 class Image;
 
 #define USE_ENVIRONMENT_MAP 1
-#define ENVIRONMENT_MAP_FILE_NAME "Resource\\galileo_probe.pfm"
+#define ENVIRONMENT_MAP_FILE_NAME "Resource\\stpeters_probe.pfm"
 
 class Scene
 {

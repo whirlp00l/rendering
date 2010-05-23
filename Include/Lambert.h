@@ -24,6 +24,8 @@ public:
 protected:
     Vector3 m_kd;
     Vector3 m_ka;
+
+	Vector3 getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
 };
 
 #endif // CSE168_LAMBERT_H_INCLUDED

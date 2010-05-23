@@ -106,7 +106,14 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	// add in the phong highlights (if necessary)
 	if( m_phong_exp != 0 )
 	{
-		L += getPhongHighlightContribution( ray, hit, scene );
+		const Lights *lightlist = scene.lights();
+		 // loop over all of the lights
+		Lights::const_iterator lightIter;
+		for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
+		{
+			PointLight* pLight = *lightIter;
+			L += getPhongHighlightContribution( pLight, ray, hit );
+		}
 	}
 
 	L += m_ka;

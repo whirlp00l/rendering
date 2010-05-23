@@ -11,6 +11,8 @@ public:
 	~AreaLight();
 
 	float getHitRatio( Vector3 hitPoint, const Scene& scene );
+	Vector3 getRandomSample() const;
+
 	virtual void preCalc(); // we'll use this to construct our light sample points
 
 	static unsigned int NUM_SAMPLES;

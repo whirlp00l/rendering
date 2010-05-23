@@ -2,6 +2,7 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "DebugMem.h"
+#include "AreaLight.h"
 #include "PerlinNoise.h"
 #include "WorleyNoise.h"
 
@@ -50,73 +51,29 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 	delete [] at;
 	at = NULL;
 
-	// we're in between "stones"
-	if( distance <= THRESHOLD )
-		return Vector3(0,0,0);
-	// just use diffuse lighting
-	else 
+	Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
+	// use diffuse lighting (if distance <= threshold, leave it black)
+	if( distance > THRESHOLD ) 
 	{
-		Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
-    
-		const Vector3 viewDir = -ray.d; // d is a unit vector
-	    
-		const Lights *lightlist = scene.lights();
-	    
-		// loop over all of the lights
-		Lights::const_iterator lightIter;
-		for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
+		float perlinNoise, red, green, blue; // have to declare all these here to make the compiler happy
+		switch( mColoring )
 		{
-			PointLight* pLight = *lightIter;
-
-			Vector3 l = pLight->position() - hit.P;
-
-			// the inverse-squared falloff
-			float falloff = l.length2();
-			float magnitude = sqrt(falloff);
-			// normalize the light direction
-			l /= magnitude;
-
-			// we only need to add this light's contribution if we're not in shadow
-			Ray shadowRay;
-			shadowRay.d = l;
-			shadowRay.o = hit.P;
-			HitInfo hitInfo;
-			// we have a shadow!
-			if( scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
-			{
-				continue;
-			}
-	    
-			// get the diffuse component
-			float nDotL = dot(hit.N, l);
-			Vector3 result = pLight->color();
-			float perlinNoise, red, green, blue; // have to declare all these here to make the compiler happy
-			switch( mColoring )
-			{
-			case COLORFUL:
-				red = std::max( 0.0f, (1 + sin(colorID))/2 );
-				blue = std::max( 0.0f, (1 + cos(colorID))/2 );
-				green = std::max( 0.0f, ( red + blue ) / 2 );
-				result *= Vector3(red,green,blue);
-				perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
-				L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * (1-pow(perlinNoise,2));
-				break;
-			case REALISTIC:
-				result *= m_kd;
-				perlinNoise = (1 + mNoiseMaker->Get( hit.P.x, hit.P.y, hit.P.z )) / 2;
-				L += std::max(0.0f, nDotL/falloff * pLight->wattage() / PI) * result * perlinNoise;
-				break;
-			}
-
-			if( m_phong_exp != 0 )
-			{
-				L += getPhongHighlightContribution( ray, hit, scene );
-			}
+		case COLORFUL:
+			red = std::max( 0.0f, (1 + sin(colorID))/2 );
+			blue = std::max( 0.0f, (1 + cos(colorID))/2 );
+			green = std::max( 0.0f, ( red + blue ) / 2 );
+			perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
+			L += Vector3(red,green,blue) * getDiffuseColor( ray, hit, scene );
+			break;
+		case REALISTIC:
+			perlinNoise = (1 + mNoiseMaker->Get( hit.P.x, hit.P.y, hit.P.z )) / 2;
+			L += perlinNoise * getDiffuseColor( ray, hit, scene );
+			break;
 		}
-	    
-		// add the ambient component
-		L += m_ka;
-
-		return L;
 	}
+		    
+	// add the ambient component
+	L += m_ka;
+
+	return L;
 }

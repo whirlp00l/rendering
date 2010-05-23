@@ -18,7 +18,18 @@ Lambert::~Lambert()
 Vector3
 Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 {
-    Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 L = getDiffuseColor( ray, hit, scene );
+
+    // add the ambient component
+    L += m_ka;
+    
+    return L;
+}
+
+Vector3
+Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+{
+	Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
     
     const Vector3 viewDir = -ray.d; // d is a unit vector
     
@@ -63,12 +74,9 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 
 		if( m_phong_exp != 0 )
 		{
-			L += getPhongHighlightContribution( ray, hit, scene );
+			L += getPhongHighlightContribution( pLight, ray, hit );
 		}
     }
-    
-    // add the ambient component
-    L += m_ka;
     
     return L;
 }

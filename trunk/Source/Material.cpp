@@ -26,27 +26,18 @@ Material::shade(const Ray&, const HitInfo&, const Scene&) const
 }
 
 Vector3 
-Material::getPhongHighlightContribution( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+Material::getPhongHighlightContribution( const PointLight * pLight, const Ray& ray, const HitInfo& hit ) const
 {
 	Vector3 contribution(0,0,0);
 
-	const Lights *lightlist = scene.lights();
-    
-	// loop over all of the lights
-	Lights::const_iterator lightIter;
-	for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
-	{
-		PointLight* pLight = *lightIter;
+	Vector3 l = pLight->position() - hit.P;
+	l.normalize();
 
-		Vector3 l = pLight->position() - hit.P;
-		l.normalize();
-
-		Vector3 viewDir = -ray.d;
-		Vector3 lightReflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
-		float viewDirDotReflectDir = dot( viewDir, lightReflectDir );
-		if( viewDirDotReflectDir > 0 )
-			contribution += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();
-	}
+	Vector3 viewDir = -ray.d;
+	Vector3 lightReflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+	float viewDirDotReflectDir = dot( viewDir, lightReflectDir );
+	if( viewDirDotReflectDir > 0 )
+		contribution += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();
 
 	return contribution;
 }

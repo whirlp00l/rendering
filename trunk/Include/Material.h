@@ -41,7 +41,7 @@ protected:
 	float m_refractive_index;
 	float m_phong_exp;
 
-	Vector3 getPhongHighlightContribution( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
+	Vector3 getPhongHighlightContribution( const PointLight * pLight, const Ray& ray, const HitInfo& hit ) const;
 };
 
 #endif // CSE168_MATERIAL_H_INCLUDED

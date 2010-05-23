@@ -9,6 +9,8 @@
 class Camera;
 class Image;
 
+#define USE_PATH_TRACING 1
+#define NUM_SAMPLES_PER_PIXEL 10
 #define USE_ENVIRONMENT_MAP 1
 #define ENVIRONMENT_MAP_FILE_NAME "Resource\\stpeters_probe.pfm"
 

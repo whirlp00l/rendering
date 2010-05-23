@@ -104,22 +104,34 @@ Scene::raytraceImage(Camera *cam, Image *img)
     for (int j = 0; j < img->height(); ++j)
     {
         for (int i = 0; i < img->width(); ++i)
-        {
-            ray = cam->eyeRay(i, j, img->width(), img->height());
-            if (trace(hitInfo, ray))
-            {
-                shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
-                img->setPixel(i, j, shadeResult);
-            }
+        {		
+			ray = cam->eyeRay(i, j, img->width(), img->height());
+			if (trace(hitInfo, ray))
+			{
+				shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
+			}
 			else
 			{
 				if( USE_ENVIRONMENT_MAP && this->environmentMap() )
 				{
 					shadeResult = EnvironmentMap::lookUp( ray.d, this->environmentMap(), this->mapWidth(), this->mapHeight() );
-					img->setPixel(i, j, shadeResult);
 				}
 			}
-        }
+
+			// incorporate indirect lighting
+			if( USE_PATH_TRACING )
+			{
+				for( int k = 0; k < NUM_SAMPLES_PER_PIXEL; k++ )
+				{
+					// sample indirect lighting here
+				}
+
+				// average the result and add it to the shade result here
+			}
+
+			// now actually set the pixel color
+			img->setPixel(i, j, shadeResult);
+		}
 
         img->drawScanline(j);
         glFinish();

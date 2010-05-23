@@ -32,7 +32,8 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
 	Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
     
     const Vector3 viewDir = -ray.d; // d is a unit vector
-    
+   
+	// BEGIN CODE FOR DIRECT LIGHTING
     const Lights *lightlist = scene.lights();
     
     // loop over all of the lights
@@ -77,6 +78,7 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
 			L += getPhongHighlightContribution( pLight, ray, hit );
 		}
     }
+	// END CODE FOR DIRECT LIGHTING
     
     return L;
 }

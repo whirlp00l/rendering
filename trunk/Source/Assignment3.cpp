@@ -421,15 +421,15 @@ namespace
 			Triangle* t = new Triangle;
 			t->setIndex(i);
 			t->setMesh(mesh);
-			/*
+			
 			if( t->getMesh()->materials() && t->getMesh()->materials()[i] )
 			{
 				Material * storedMaterial = t->getMesh()->materials()[i];
 				t->setMaterial( storedMaterial );
 			}
 			else
-			*/
 				t->setMaterial(material); 
+
 			g_scene->addObject(t);
 		}
 	}

@@ -63,3 +63,12 @@ AreaLight::preCalc()
 		m_samples[i] = axisOrigin + u * m_axis1 + v * m_axis2;
 	}
 }
+
+Vector3
+AreaLight::getRandomSample() const
+{
+	assert( m_samples );
+	srand(time(0));
+	int sampleIndex = rand() / AreaLight::NUM_SAMPLES;
+	return m_samples[sampleIndex];
+}

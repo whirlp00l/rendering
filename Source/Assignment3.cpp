@@ -15,14 +15,7 @@
 #include "Stone.h"
 #include "DebugMem.h"
 
-// local helper function declarations
-namespace
-{
-	void addMeshTrianglesToScene(TriangleMesh * mesh, Material * material);
-	inline Matrix4x4 translate(float x, float y, float z);
-	inline Matrix4x4 scale(float x, float y, float z);
-	inline Matrix4x4 rotate(float angle, float x, float y, float z);
-} // namespace
+#include "AssignmentHelper.h"
 
 Assignment3::Assignment3()
 {
@@ -62,29 +55,29 @@ Assignment3::makeSphereScene()
     // sphere 1   
 	Material* material = new SpecularReflector(Vector3(0.0f, 0.0f, 1.0f));
     xform.setIdentity();
-    xform *= translate(-1.0, 1.0, -0.5);
+	xform *= AssignmentHelper::translate(-1.0, 1.0, -0.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+	AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // sphere 2
 	//material = new Lambert(Vector3(1,0,0));
 	material = new SpecularReflector(Vector3(1.0f, 0.0f, 1.0f));
     xform.setIdentity();
-    xform *= translate(1.5, 1, 1.5);
+	xform *= AssignmentHelper::translate(1.5, 1, 1.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // sphere 3   
     //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
 	float index = SpecularRefractor::getRefractiveIndex(SpecularRefractor::GLASS_COMMON);
 	material = new SpecularRefractor(index);
     xform.setIdentity();
-    xform *= translate(-1.5, 1, 2);
+	xform *= AssignmentHelper::translate(-1.5, 1, 2);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // create the floor triangle
 	material = new Lambert(Vector3(1));
@@ -163,7 +156,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	transform.setIdentity();
 	//transform *= rotate(45,0,1,0);
     teapot->load("Resource\\teapot.obj", transform);
-	addMeshTrianglesToScene(teapot, teapotMaterial);
+	AssignmentHelper::addMeshTrianglesToScene(teapot, teapotMaterial);
 
     // create the floor triangle
     TriangleMesh * floor = new TriangleMesh;
@@ -216,18 +209,18 @@ Assignment3::makeMultipleTeapotsScene()
     Material* diffuseMaterial = new Lambert(Vector3(1,0,1));
     TriangleMesh * diffuseTeapot = new TriangleMesh;
 	transform.setIdentity();
-	transform *= translate( -2, 0, 0 );
-	transform *= rotate( -45, 0, 1, 0 );
+	transform *= AssignmentHelper::translate( -2, 0, 0 );
+	transform *= AssignmentHelper::rotate( -45, 0, 1, 0 );
     diffuseTeapot->load("Resource\\teapot.obj", transform);
-    addMeshTrianglesToScene(diffuseTeapot, diffuseMaterial);
+    AssignmentHelper::addMeshTrianglesToScene(diffuseTeapot, diffuseMaterial);
 
 	Material * specularMaterial = new SpecularReflector(Vector3(1));
 	TriangleMesh * specularTeapot = new TriangleMesh;
 	transform.setIdentity();
-	transform *= translate( 2, 0, 0 );
-	transform *= rotate( 45, 0, 1, 0 );
+	transform *= AssignmentHelper::translate( 2, 0, 0 );
+	transform *= AssignmentHelper::rotate( 45, 0, 1, 0 );
 	specularTeapot->load("Resource\\teapot.obj", transform);
-	addMeshTrianglesToScene(specularTeapot, specularMaterial);
+	AssignmentHelper::addMeshTrianglesToScene(specularTeapot, specularMaterial);
 
     // create the floor triangle
     TriangleMesh * floor = new TriangleMesh;
@@ -282,7 +275,7 @@ Assignment3::makeCornellScene()
 	//Material * material = new Stone(Stone::COLORFUL, 1.2);
     TriangleMesh * box = new TriangleMesh;
     box->load("Resource\\cornell_box.obj");
-    addMeshTrianglesToScene(box, material);
+    AssignmentHelper::addMeshTrianglesToScene(box, material);
 
     // let objects do pre-calculations if needed
     g_scene->preCalc();
@@ -317,7 +310,7 @@ Assignment3::makeCornellSceneWithSpheres()
     Material* material = new Lambert(Vector3(0.5f));
     TriangleMesh * box = new TriangleMesh;
     box->load("Resource\\empty_cornell_box.obj");
-    addMeshTrianglesToScene(box, material);
+    AssignmentHelper::addMeshTrianglesToScene(box, material);
 
 	TriangleMesh * mesh;
 	Matrix4x4 xform;
@@ -325,18 +318,18 @@ Assignment3::makeCornellSceneWithSpheres()
 	// sphere 1   
 	material = new SpecularReflector(Vector3(1.0f));
     xform.setIdentity();
-    xform *= translate(1.5, 1.0, -3.5);
+    xform *= AssignmentHelper::translate(1.5, 1.0, -3.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // sphere 2
 	material = new Lambert(Vector3(0.75,0,1.0));
     xform.setIdentity();
-    xform *= translate(4.0, 1.0, -1.5);
+    xform *= AssignmentHelper::translate(4.0, 1.0, -1.5);
     mesh = new TriangleMesh;
     mesh->load("Resource\\sphere_high_res.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
 
     // let objects do pre-calculations if needed
     g_scene->preCalc();
@@ -372,19 +365,19 @@ Assignment3::make3TeapotsScene()
     // teapot 1   
 	Material* material = new SpecularReflector(Vector3(0.0f, 0.0f, 1.0f));
     xform.setIdentity();
-    xform *= translate(-1, 0, -1);
-    xform *= rotate(25, 0, 0, 0);
+    xform *= AssignmentHelper::translate(-1, 0, -1);
+    xform *= AssignmentHelper::rotate(25, 0, 0, 0);
     mesh = new TriangleMesh;
     mesh->load("Resource\\teapot.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // teapot 2
 	material = new SpecularReflector();
     xform.setIdentity();
-    xform *= translate(2.0, 0, 3);
+    xform *= AssignmentHelper::translate(2.0, 0, 3);
     mesh = new TriangleMesh;
     mesh->load("Resource\\teapot.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // teapot 3   
     //material = new SpecularReflector(Vector3(0.0f, 1.0f, 1.0f));
@@ -392,11 +385,11 @@ Assignment3::make3TeapotsScene()
 	material = new SpecularRefractor(index);
 	material->setPhongExp( 50 );
     xform.setIdentity();
-    xform *= translate(-2, 0, 4);
-    xform *= rotate(45, 0, 1, 0);
+    xform *= AssignmentHelper::translate(-2, 0, 4);
+    xform *= AssignmentHelper::rotate(45, 0, 1, 0);
     mesh = new TriangleMesh;
     mesh->load("Resource\\teapot.obj", xform);
-    addMeshTrianglesToScene(mesh, material);
+    AssignmentHelper::addMeshTrianglesToScene(mesh, material);
     
     // create the floor triangle
 	material = new Stone(Stone::COLORFUL, 2);
@@ -418,81 +411,3 @@ Assignment3::make3TeapotsScene()
     // let objects do pre-calculations if needed
     g_scene->preCalc();
 }
-
-// local helper function definitions
-namespace
-{
-	void
-	addMeshTrianglesToScene(TriangleMesh * mesh, Material * material)
-	{
-		// create all the triangles in the bunny mesh and add to the scene
-		for (int i = 0; i < mesh->numTris(); ++i)
-		{
-			Triangle* t = new Triangle;
-			t->setIndex(i);
-			t->setMesh(mesh);
-			
-			if( t->getMesh()->materials() && t->getMesh()->materials()[i] )
-			{
-				Material * storedMaterial = t->getMesh()->materials()[i];
-				t->setMaterial( storedMaterial );
-			}
-			else
-				t->setMaterial(material); 
-
-			g_scene->addObject(t);
-		}
-	}
-
-	inline Matrix4x4
-	translate(float x, float y, float z)
-	{
-		Matrix4x4 m;
-		m.setColumn4(Vector4(x, y, z, 1));
-		return m;
-	}
-
-
-	inline Matrix4x4
-	scale(float x, float y, float z)
-	{
-		Matrix4x4 m;
-		m.m11 = x;
-		m.m22 = y;
-		m.m33 = z;
-		return m;
-	}
-
-	// angle is in degrees
-	inline Matrix4x4
-	rotate(float angle, float x, float y, float z)
-	{
-		float rad = angle*(PI/180.);
-	    
-		float x2 = x*x;
-		float y2 = y*y;
-		float z2 = z*z;
-		float c = cos(rad);
-		float cinv = 1-c;
-		float s = sin(rad);
-		float xy = x*y;
-		float xz = x*z;
-		float yz = y*z;
-		float xs = x*s;
-		float ys = y*s;
-		float zs = z*s;
-		float xzcinv = xz*cinv;
-		float xycinv = xy*cinv;
-		float yzcinv = yz*cinv;
-	    
-		Matrix4x4 m;
-		m.set(x2 + c*(1-x2), xy*cinv+zs, xzcinv - ys, 0,
-			  xycinv - zs, y2 + c*(1-y2), yzcinv + xs, 0,
-			  xzcinv + ys, yzcinv - xs, z2 + c*(1-z2), 0,
-			  0, 0, 0, 1);
-		return m;
-	}
-
-
-} // namespace
-

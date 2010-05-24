@@ -64,15 +64,6 @@ AreaLight::preCalc()
 	}
 }
 
-Vector3
-AreaLight::getRandomSample() const
-{
-	assert( m_samples );
-	srand(time(0));
-	int sampleIndex = rand() / AreaLight::NUM_SAMPLES;
-	return m_samples[sampleIndex];
-}
-
 bool
 AreaLight::containsPoint( Vector3 point ) const 
 {

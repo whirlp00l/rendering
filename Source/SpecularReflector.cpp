@@ -28,7 +28,7 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 
 	numRecursiveCalls++;
 
-	Vector3 L = getReflectedColor( ray, hit, scene );
+	Vector3 L = m_kd * getReflectedColor( ray, hit, scene );
 
 	// add in the phong highlights (if necessary)
 	if( m_phong_exp != 0 )

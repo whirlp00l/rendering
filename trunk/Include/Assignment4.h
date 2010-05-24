@@ -4,8 +4,10 @@
 class Assignment4
 {
 public:
-	Assignment3();
-	~Assignment3();
+	Assignment4();
+	virtual ~Assignment4();
+
+	void makeSponzaScene();
 };
 
 #endif // ASSIGNMENT_4_H_INCLUDED

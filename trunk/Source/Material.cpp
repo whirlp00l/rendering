@@ -12,6 +12,8 @@ Material::Material()
 {
 	m_phong_exp = 0.0f;
 	m_refractive_index = 1.0f;
+	m_use_bump_map = false;
+	m_bump_map_noise_maker = NULL;
 	m_type = Material::UNDEFINED;
 }
 
@@ -34,7 +36,8 @@ Material::getPhongHighlightContribution( const PointLight * pLight, const Ray& r
 	l.normalize();
 
 	Vector3 viewDir = -ray.d;
-	Vector3 lightReflectDir = 2 * dot( l, hit.N ) * hit.N - l; // direction to light reflected across normal
+	Vector3 normal = m_use_bump_map ? calcBumpMappedNormal( hit.P, hit.N ) : hit.N;
+	Vector3 lightReflectDir = 2 * dot( l, normal ) * normal - l; // direction to light reflected across normal
 	float viewDirDotReflectDir = dot( viewDir, lightReflectDir );
 	if( viewDirDotReflectDir > 0 )
 		contribution += std::max(0.0f, pow(viewDirDotReflectDir, m_phong_exp)) * pLight->color();
@@ -96,4 +99,52 @@ Material::loadMaterial( char * fileName )
 	( void )fclose( fp );
 
 	return new Lambert( kd, ka );
+}
+
+void
+Material::setUseBumpMap( bool useBumpMap )
+{
+	// use a bump map for this material
+	if( useBumpMap )
+	{
+		// if we don't already have one, we need to create a noise maker
+		if( !m_bump_map_noise_maker )
+		{
+			m_bump_map_noise_maker = new CustomizablePerlinNoise(8, 4, 2, 94);
+		}
+	}
+	// DON'T use a bump map for this material
+	else
+	{
+		if( m_use_bump_map )
+		{
+			delete m_bump_map_noise_maker;
+			m_bump_map_noise_maker = NULL;
+		}
+	}
+
+	m_use_bump_map = useBumpMap;
+}
+
+Vector3 
+Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
+{
+	// if we don't want to use bumpmapping, just return the original normal
+	if( !m_use_bump_map )
+		return origNormal;
+
+	// let's make some noise!
+	float noiseCoefX = m_bump_map_noise_maker->Get(hitPoint.x + 0.1, hitPoint.y + 0.1, hitPoint.z + 0.1);
+	float noiseCoefY = m_bump_map_noise_maker->Get(hitPoint.y + 0.1, hitPoint.z + 0.1, hitPoint.x + 0.1);
+	float noiseCoefZ = m_bump_map_noise_maker->Get(hitPoint.z + 0.1, hitPoint.x + 0.1, hitPoint.y + 0.1);
+
+	Vector3 perturbedNormal( ( origNormal.x + 0.1 )* noiseCoefX, ( origNormal.y + 0.1 ) * noiseCoefY, ( origNormal.z + 0.1 ) * noiseCoefZ );
+	perturbedNormal *= perturbedNormal;
+	perturbedNormal.normalize();
+
+	// we don't want to completely FLIP any normals
+	if( dot( perturbedNormal, origNormal ) < 0 )
+		perturbedNormal *= -1;
+
+	return perturbedNormal;
 }

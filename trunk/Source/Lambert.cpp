@@ -67,7 +67,8 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
 			hitRatio = (( AreaLight * )pLight)->getHitRatio( hit.P, scene );
     
         // get the diffuse component
-        float nDotL = dot(hit.N, l);
+		Vector3 normal = m_use_bump_map ? calcBumpMappedNormal( hit.P, hit.N ) : hit.N;
+        float nDotL = dot(normal, l);
         Vector3 result = pLight->color();
         result *= m_kd;
         

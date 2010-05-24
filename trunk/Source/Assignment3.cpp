@@ -124,12 +124,18 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     g_camera->setFOV(45);
 
     // create and place a point light source
+	/*
     PointLight * light = new PointLight;
     light->setPosition(Vector3(10, 10, 10));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(700);
     g_scene->addLight(light);
+	*/
 
+	PointLight * light = new AreaLight(Vector3(10,10,10), Vector3(0,0,2), Vector3(2,0,0));
+    light->setColor(Vector3(1, 1, 1));
+    light->setWattage(700);
+    g_scene->addLight(light);
 
 	Material * teapotMaterial;
 	switch( teapotMaterialType )
@@ -150,6 +156,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	}
 
 	teapotMaterial->setPhongExp( 50.0f );
+	teapotMaterial->setUseBumpMap( true );
 
     TriangleMesh * teapot = new TriangleMesh;
 	Matrix4x4 transform;
@@ -169,6 +176,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN3(Vector3(0, 1, 0));
     
 	Material* floorMaterial = new Stone(Stone::REALISTIC);
+	floorMaterial->setUseBumpMap( true );
 	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);
@@ -263,10 +271,12 @@ Assignment3::makeCornellScene()
     light->setWattage(50);
     g_scene->addLight(light);
 
+	/*
 	PointLight * light2 = new AreaLight(Vector3(4.75, 5.51, 5), Vector3(0,0,4), Vector3(4,0,0));
 	light2->setColor(Vector3(1, 1, 1));
     light2->setWattage(50);
     g_scene->addLight(light2);
+	*/
     
     Material* material = new Lambert(Vector3(0.5f));
 	//Material * material = new Stone(Stone::COLORFUL, 1.2);

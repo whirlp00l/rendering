@@ -5,6 +5,7 @@
 #include "PointLight.h"
 #include "Scene.h"
 #include "Ray.h"
+#include "WorleyNoise.h"
 
 const int Material::SPECULAR_RECURSION_DEPTH = 20;
 
@@ -110,7 +111,7 @@ Material::setUseBumpMap( bool useBumpMap )
 		// if we don't already have one, we need to create a noise maker
 		if( !m_bump_map_noise_maker )
 		{
-			m_bump_map_noise_maker = new CustomizablePerlinNoise(8, 4, 2, 94);
+			m_bump_map_noise_maker = new CustomizablePerlinNoise(4, 4, 1, 14);
 		}
 	}
 	// DON'T use a bump map for this material
@@ -130,7 +131,7 @@ Vector3
 Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
 {
 	// if we don't want to use bumpmapping, just return the original normal
-	if( !m_use_bump_map )
+	if( !m_use_bump_map || !m_bump_map_noise_maker )
 		return origNormal;
 
 	// let's make some noise!
@@ -138,8 +139,10 @@ Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
 	float noiseCoefY = m_bump_map_noise_maker->Get(hitPoint.y + 0.1, hitPoint.z + 0.1, hitPoint.x + 0.1);
 	float noiseCoefZ = m_bump_map_noise_maker->Get(hitPoint.z + 0.1, hitPoint.x + 0.1, hitPoint.y + 0.1);
 
-	Vector3 perturbedNormal( ( origNormal.x + 0.1 )* noiseCoefX, ( origNormal.y + 0.1 ) * noiseCoefY, ( origNormal.z + 0.1 ) * noiseCoefZ );
-	perturbedNormal *= perturbedNormal;
+	//Vector3 perturbedNormal( ( origNormal.x + 0.1 )* noiseCoefX, ( origNormal.y + 0.1 ) * noiseCoefY, ( origNormal.z + 0.1 ) * noiseCoefZ );
+	//perturbedNormal *= perturbedNormal;
+	Vector3 perturbedNormal( noiseCoefX, noiseCoefY, noiseCoefZ );
+	perturbedNormal += origNormal;
 	perturbedNormal.normalize();
 
 	// we don't want to completely FLIP any normals

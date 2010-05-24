@@ -124,18 +124,18 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     g_camera->setFOV(45);
 
     // create and place a point light source
-	/*
     PointLight * light = new PointLight;
     light->setPosition(Vector3(10, 10, 10));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(700);
     g_scene->addLight(light);
-	*/
 
+	/*
 	PointLight * light = new AreaLight(Vector3(10,10,10), Vector3(0,0,2), Vector3(2,0,0));
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(700);
     g_scene->addLight(light);
+	*/
 
 	Material * teapotMaterial;
 	switch( teapotMaterialType )
@@ -175,7 +175,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN2(Vector3(0, 1, 0));
     floor->setN3(Vector3(0, 1, 0));
     
-	Material* floorMaterial = new Stone(Stone::REALISTIC);
+	Material* floorMaterial = new Stone(Stone::COLORFUL);
 	floorMaterial->setUseBumpMap( true );
 	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;

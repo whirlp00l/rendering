@@ -3,6 +3,7 @@
 
 #include "Miro.h"
 #include "Vector3.h"
+#include "CustomizablePerlinNoise.h"
 
 class Material
 {
@@ -30,6 +31,8 @@ public:
 
 	Type getType() const { return m_type; }
 	float getRefractiveIndex() const { return m_refractive_index; }
+	bool useBumpMap() const { return m_use_bump_map; }
+	void setUseBumpMap( bool useBumpMap ); 
 	bool isSpecular() const { return m_type == SPECULAR_REFLECTOR || m_type == SPECULAR_REFRACTOR; }
 	bool isDiffuse() const { return m_type == DIFFUSE || m_type == STONE; }
 
@@ -37,10 +40,14 @@ public:
 
 	static Material * loadMaterial( char * fileName );
 
+	Vector3 calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const;
+
 protected:
 	Type m_type;
 	float m_refractive_index;
 	float m_phong_exp;
+	bool m_use_bump_map;
+	CustomizablePerlinNoise * m_bump_map_noise_maker;
 
 	Vector3 getPhongHighlightContribution( const PointLight * pLight, const Ray& ray, const HitInfo& hit ) const;
 };

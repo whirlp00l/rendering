@@ -268,8 +268,8 @@ Assignment3::makeCornellScene()
     light2->setWattage(50);
     g_scene->addLight(light2);
     
-    //Material* material = new Lambert(Vector3(0.5f));
-	Material * material = new Stone(Stone::COLORFUL, 1.2);
+    Material* material = new Lambert(Vector3(0.5f));
+	//Material * material = new Stone(Stone::COLORFUL, 1.2);
     TriangleMesh * box = new TriangleMesh;
     box->load("Resource\\cornell_box.obj");
     addMeshTrianglesToScene(box, material);

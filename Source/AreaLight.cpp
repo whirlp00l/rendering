@@ -57,8 +57,8 @@ AreaLight::preCalc()
 	{
 		float u, v;
 		
-		u = rand() / static_cast<double>(RAND_MAX);
-		v = rand() / static_cast<double>(RAND_MAX);
+		u = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+		v = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
 
 		m_samples[i] = axisOrigin + u * m_axis1 + v * m_axis2;
 	}
@@ -71,4 +71,46 @@ AreaLight::getRandomSample() const
 	srand(time(0));
 	int sampleIndex = rand() / AreaLight::NUM_SAMPLES;
 	return m_samples[sampleIndex];
+}
+
+bool
+AreaLight::containsPoint( Vector3 point ) const 
+{
+	/*
+	 * IDEA:
+	 * For a point to fall within the area light, 3 conditions must be met:
+	 * 1) The projection of the plane normal (i.e. cross( m_axis, m_axis ) and the vector formed
+	 *    by ( point - axisOrigin ) must be 0. That is, the point lies in the desired plane.
+	 * 2) ( point - axisOrigin ) projected onto m_axis1 must be in the range [0, magnitude(m_axis1)].
+	 * 3) ( point - axisOrigin ) projected onto m_axis2 must be in the range [0, magnitude(m_axis2)].
+	 *
+	 * Note that we should account for floating point error in all 3 conditions.
+	 */
+	Vector3 axisOrigin = m_position - 0.5 * m_axis1 - 0.5 * m_axis2;
+	Vector3 pointMinusAxisO = point - axisOrigin;
+
+	// test condition 1
+	Vector3 planeNormal = cross( m_axis1, m_axis2 );
+	planeNormal.normalize();
+	float planeNormalProj = dot( planeNormal, pointMinusAxisO );
+	// anything within the range [-epsilon, epsilon] is valid to account for potential floating point error
+	if(  planeNormalProj < -epsilon || planeNormalProj > epsilon )
+		return false; // condition 1 was not met
+
+	// test condition 2
+	float magAxis1 = m_axis1.length();
+	float axis1Proj = dot( m_axis1, pointMinusAxisO );
+	// anything within the range [-epsilon, 1 + epsilon] is valid to account for potential floating point error
+	if( axis1Proj < -epsilon || axis1Proj > (1 + epsilon) )
+		return false; // condition 2 was not met
+
+	// test condition 3
+	float magAxis2 = m_axis2.length();
+	float axis2Proj = dot( m_axis2, pointMinusAxisO );
+	// anything within the range [-epsilon, 1 + epsilon] is valid to account for potential floating point error
+	if( axis2Proj < -epsilon || axis2Proj > (1 + epsilon) )
+		return false; // condition 3 was not met
+
+	// all 3 conditions have been met, so the point lies within the area light
+	return true;
 }

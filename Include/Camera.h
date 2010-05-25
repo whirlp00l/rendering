@@ -53,6 +53,7 @@ public:
 
 private:
     void calcLookAt();
+	void calcAperturePlaneAxes();
 
     Vector3 m_bgColor;
     int m_renderer;
@@ -65,6 +66,7 @@ private:
     float m_fov;
 	float m_focal_plane_distance;
 	float m_aperture; // radius of aperture. Camera position is the center of the aperture opening.
+	Vector3 m_aperture_plane_axis1, m_aperture_plane_axis2;
 };
 
 extern Camera * g_camera;
@@ -74,6 +76,8 @@ extern Camera * g_camera;
 inline void Camera::setEye(float x, float y, float z)
 {
     m_eye.set(x, y, z);
+
+	calcAperturePlaneAxes();
 }
 
 inline void Camera::setEye(const Vector3& eye)
@@ -96,6 +100,8 @@ inline void Camera::setViewDir(float x, float y, float z)
 {
     m_viewDir.set(x, y, z);
     m_viewDir.normalize();
+
+	calcAperturePlaneAxes();
 }
 
 inline void Camera::setViewDir(const Vector3& vd)
@@ -134,6 +140,8 @@ inline void Camera::setAperture(float aperture)
 {
 	assert( aperture > 0 );
 	m_aperture = aperture;
+
+	calcAperturePlaneAxes();
 }
 
 #endif // CSE168_CAMERA_H_INCLUDED

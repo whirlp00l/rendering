@@ -21,7 +21,9 @@ Camera::Camera() :
     m_viewDir(0,0,-1),
     m_up(0,1,0),
     m_lookAt(FLT_MAX, FLT_MAX, FLT_MAX),
-    m_fov((45.)*(PI/180.))
+    m_fov((45.)*(PI/180.)),
+	m_focal_plane_distance(10.0f),
+	m_aperture(1.0f)
 {
     calcLookAt();
 }
@@ -129,4 +131,37 @@ Camera::eyeRay(int x, int y, int imageWidth, int imageHeight)
     const float imPlaneVPos = bottom + (top - bottom)*(((float)y+0.5f)/(float)imageHeight); 
 
     return Ray(m_eye, (imPlaneUPos*uDir + imPlaneVPos*vDir - wDir).normalize(), 1.0f);
+}
+
+bool
+Camera::getFocalPlaneIntersection(Vector3 &desiredFocalPlanePt, const Vector3 hitPt) const
+{
+	/*
+	 * The IDEA:
+	 *
+	 * Equation for a plane: x is in a plane with normal n that contains point p if:
+	 *		dot( n, x - p ) = 0;
+	 * The point on the focal plane that we are interested in can be represented as:
+	 *		cameraEyePt + t * dirToHitPtFromCamera
+	 * for some value of t.
+	 *
+	 * We can combine these two equations to solve for t.
+	 */
+	Vector3 focalPlaneNormal = m_lookAt - m_eye;
+	focalPlaneNormal.normalize();
+
+	Vector3 focalPlanePt = m_eye + m_focal_plane_distance * focalPlaneNormal;
+
+	Vector3 dirFromCamera = hitPt - m_eye;
+	dirFromCamera.normalize();
+
+	float t = ( dot( focalPlaneNormal, focalPlanePt ) - dot( focalPlaneNormal, m_eye ) ) / dot( focalPlaneNormal, dirFromCamera );
+
+	// the intersection with the focal plane is AT the camera or behind it
+	if( t <= 0 )
+		return false;
+
+	// calculate the point on the focal plane we are interested in
+	desiredFocalPlanePt = m_eye + t * dirFromCamera;
+	return true;
 }

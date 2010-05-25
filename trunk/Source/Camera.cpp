@@ -7,6 +7,7 @@
 #include "Console.h" 
 #include "OpenGL.h"
 #include "DebugMem.h"
+#include <time.h>
 
 Camera * g_camera = 0;
 
@@ -31,7 +32,6 @@ Camera::Camera() :
 
 Camera::~Camera()
 {
-
 }
 
 
@@ -147,8 +147,7 @@ Camera::getFocalPlaneIntersection(Vector3 &desiredFocalPlanePt, const Vector3 hi
 	 *
 	 * We can combine these two equations to solve for t.
 	 */
-	Vector3 focalPlaneNormal = m_lookAt - m_eye;
-	focalPlaneNormal.normalize();
+	Vector3 focalPlaneNormal = m_viewDir;
 
 	Vector3 focalPlanePt = m_eye + m_focal_plane_distance * focalPlaneNormal;
 
@@ -164,4 +163,33 @@ Camera::getFocalPlaneIntersection(Vector3 &desiredFocalPlanePt, const Vector3 hi
 	// calculate the point on the focal plane we are interested in
 	desiredFocalPlanePt = m_eye + t * dirFromCamera;
 	return true;
+}
+
+Vector3 
+Camera::getRandomApertureSample() const
+{
+	srand((unsigned)time(0));
+	
+	// first define the aperture plane with 2 orthonormal axes
+	Vector3 axis1 = m_up;
+	Vector3 axis2 = cross( m_viewDir, m_up );
+	axis2.normalize();
+
+	// the aperture size defines the radius of the disc on the aperture plane
+	axis1 *= m_aperture;
+	axis2 *= m_aperture;
+
+	float tAxis1 = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+	float tAxis2 = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+
+	// since the random sample can be anywhere within the disc, the t values can range from [-1,1]
+	float posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+	if( posOrNeg <= 0.5 )
+		tAxis1 *= -1;
+	posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+	if( posOrNeg <= 0.5 )
+		tAxis2 *= -1;
+
+	Vector3 randomSample = ( m_eye + tAxis1 * axis1 ) + ( m_eye + tAxis2 * axis2 );
+	return randomSample;
 }

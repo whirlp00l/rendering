@@ -9,10 +9,12 @@
 class Camera;
 class Image;
 
-#define USE_PATH_TRACING 0
-#define NUM_SAMPLES_PER_PIXEL 30
+#define USE_PATH_TRACING 1
+#define NUM_SAMPLES_PER_PIXEL 15
 #define USE_ENVIRONMENT_MAP 1
 #define ENVIRONMENT_MAP_FILE_NAME "Resource\\stpeters_probe.pfm"
+#define USE_DEPTH_OF_FIELD 1
+#define NUM_DEPTH_OF_FIELD_SAMPLES 10
 
 class Scene
 {
@@ -45,6 +47,8 @@ protected:
 	Vector3 * m_environment_map;
 	int m_map_width;
 	int m_map_height;
+
+	Vector3 getIndirectLight( const HitInfo hitInfo );
 };
 
 extern Scene * g_scene;

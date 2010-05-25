@@ -34,16 +34,8 @@ public:
     inline void setBGColor(float x, float y, float z);
     inline void setBGColor(const Vector3& color);
     inline void setFOV(float fov) {m_fov = fov;}
-	inline void setFocalPlaneDistance(float focalPlaneDistance) 
-	{
-		assert( focalPlaneDistance > 0 );
-		m_focal_plane_distance = focalPlaneDistance;
-	}
-	inline void setAperture(float aperture) 
-	{
-		assert( aperture > 0 );
-		m_aperture = aperture;
-	}
+	inline void setFocalPlaneDistance(float focalPlaneDistance);
+	inline void setAperture(float aperture);
 
     inline float fov() const                {return m_fov;}
     inline const Vector3 & viewDir() const  {return m_viewDir;}
@@ -55,11 +47,11 @@ public:
     Ray eyeRay(int x, int y, int imageWidth, int imageHeight);
 	// returns true if intersection with focal plane is successful (and sets desiredFocalPlanePt to that intersection). returns false otherwise.
 	bool getFocalPlaneIntersection( Vector3& desiredFocalPlanePt, const Vector3 hitPt ) const;
+	Vector3 getRandomApertureSample() const;
     
     void drawGL();
 
 private:
-
     void calcLookAt();
 
     Vector3 m_bgColor;
@@ -130,6 +122,18 @@ inline void Camera::setBGColor(float x, float y, float z)
 inline void Camera::setBGColor(const Vector3& vd)
 {
     setBGColor(vd.x, vd.y, vd.z);
+}
+
+inline void Camera::setFocalPlaneDistance(float focalPlaneDistance) 
+{
+	assert( focalPlaneDistance > 0 );
+	m_focal_plane_distance = focalPlaneDistance;
+}
+
+inline void Camera::setAperture(float aperture) 
+{
+	assert( aperture > 0 );
+	m_aperture = aperture;
 }
 
 #endif // CSE168_CAMERA_H_INCLUDED

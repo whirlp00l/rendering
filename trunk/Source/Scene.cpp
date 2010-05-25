@@ -101,7 +101,7 @@ Scene::raytraceImage(Camera *cam, Image *img)
 	*/   
 
 	// seed randomizer for path tracing
-	if( USE_PATH_TRACING )
+	if( USE_PATH_TRACING || USE_DEPTH_OF_FIELD )
 		srand((unsigned)time(0));
 
 	clock_t clockStart = clock();
@@ -115,14 +115,43 @@ Scene::raytraceImage(Camera *cam, Image *img)
 			ray = cam->eyeRay(i, j, img->width(), img->height());
 			if (trace(hitInfo, ray))
 			{
-				shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
+				if( USE_DEPTH_OF_FIELD )
+				{
+					Vector3 focalPlanePt;
+					Ray depthOfFieldRay;
+					HitInfo depthOfFieldHitInfo;
+					Vector3 depthOfFieldShadeResult(0,0,0);
+					for( int k = 0; k < NUM_DEPTH_OF_FIELD_SAMPLES; k++ )
+					{
+						bool foundPt = cam->getFocalPlaneIntersection( focalPlanePt, hitInfo.P );
+						// if we didn't find the focal plane point, do nothing
+						if( foundPt )
+						{
+							depthOfFieldRay.o = cam->getRandomApertureSample();
+							depthOfFieldRay.d = focalPlanePt - depthOfFieldRay.o;
+							depthOfFieldRay.d.normalize();
+							
+							if( trace( depthOfFieldHitInfo, depthOfFieldRay ) )
+							{
+								depthOfFieldShadeResult += depthOfFieldHitInfo.material->shade( depthOfFieldRay, depthOfFieldHitInfo, *this );
+							}
+						}
+					}
 
-				// incorporate indirect lighting
-				if( hitInfo.material->isDiffuse() && USE_PATH_TRACING )
-				{	
-					// add in the indirect lighting result (only use a fraction of it in the final color)
-					shadeResult += getIndirectLight( hitInfo ) * Vector3(0.5f);
-				} // end indirect lighting
+					shadeResult = depthOfFieldShadeResult / NUM_DEPTH_OF_FIELD_SAMPLES;
+				} // end if( USE_DEPTH_OF_FIELD )
+				// don't use depth of field
+				else
+				{
+					shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
+
+					// incorporate indirect lighting
+					if( hitInfo.material->isDiffuse() && USE_PATH_TRACING )
+					{	
+						// add in the indirect lighting result (only use a fraction of it in the final color)
+						shadeResult += getIndirectLight( hitInfo ) * Vector3(0.5f);
+					} // end indirect lighting
+				} // end don't use depth of field
 			}
 			else
 			{

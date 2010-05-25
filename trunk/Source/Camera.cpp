@@ -24,9 +24,10 @@ Camera::Camera() :
     m_lookAt(FLT_MAX, FLT_MAX, FLT_MAX),
     m_fov((45.)*(PI/180.)),
 	m_focal_plane_distance(10.0f),
-	m_aperture(1.0f)
+	m_aperture(0.1f)
 {
     calcLookAt();
+	calcAperturePlaneAxes();
 }
 
 
@@ -168,16 +169,7 @@ Camera::getFocalPlaneIntersection(Vector3 &desiredFocalPlanePt, const Vector3 hi
 Vector3 
 Camera::getRandomApertureSample() const
 {
-	srand((unsigned)time(0));
-	
-	// first define the aperture plane with 2 orthonormal axes
-	Vector3 axis1 = m_up;
-	Vector3 axis2 = cross( m_viewDir, m_up );
-	axis2.normalize();
-
-	// the aperture size defines the radius of the disc on the aperture plane
-	axis1 *= m_aperture;
-	axis2 *= m_aperture;
+	// randomizer is seeded by Scene.cpp
 
 	float tAxis1 = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
 	float tAxis2 = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
@@ -190,6 +182,29 @@ Camera::getRandomApertureSample() const
 	if( posOrNeg <= 0.5 )
 		tAxis2 *= -1;
 
-	Vector3 randomSample = ( m_eye + tAxis1 * axis1 ) + ( m_eye + tAxis2 * axis2 );
+	Vector3 randomSample = m_eye + tAxis1 * m_aperture_plane_axis1 + tAxis2 * m_aperture_plane_axis2;
 	return randomSample;
+}
+
+void
+Camera::calcAperturePlaneAxes()
+{
+	// we need a point in the plane OTHER than the eye point.
+	// we can just use arbitrary values of x and y, and then solve for z such that the point is in the plane
+	Vector3 point1( m_eye.x + 1, m_eye.y + 1, 0 ); // we'll solve for z in a moment...
+
+	// note that m_viewDir is normal to the aperture plane
+	point1.z = m_eye.z - ( m_viewDir.x * ( point1.x - m_eye.x ) - m_viewDir.y * ( point1.y - m_eye.y ) ) / m_viewDir.z;
+
+	// now we can get our first axis
+	m_aperture_plane_axis1 = point1 - m_eye;
+	m_aperture_plane_axis1.normalize();
+
+	// make the second axis orthonormal to the first
+	m_aperture_plane_axis2 = cross( m_viewDir, m_aperture_plane_axis1 );
+	m_aperture_plane_axis2.normalize();
+
+	// now make the length of each axis the radius of the aperture
+	m_aperture_plane_axis1 *= m_aperture;
+	m_aperture_plane_axis2 *= m_aperture;
 }

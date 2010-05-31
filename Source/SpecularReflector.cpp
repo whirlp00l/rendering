@@ -6,6 +6,8 @@
 
 #include <assert.h>
 
+const int SpecularReflector::SPECULAR_RECURSION_DEPTH = 20;
+
 SpecularReflector::SpecularReflector( const Vector3 & kd ) :
 Lambert(kd)
 {
@@ -21,7 +23,7 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 {
 	static int numRecursiveCalls = 0;
 	// we've maxed out our recursion
-	if( numRecursiveCalls == Material::SPECULAR_RECURSION_DEPTH )
+	if( numRecursiveCalls == SpecularReflector::SPECULAR_RECURSION_DEPTH )
 	{
 		return Vector3(0,0,0);
 	}

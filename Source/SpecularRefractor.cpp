@@ -59,7 +59,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 {
 	static int numRecursiveCalls = 0;
 	// we've maxed out our recursion
-	if( numRecursiveCalls == Material::SPECULAR_RECURSION_DEPTH )
+	if( numRecursiveCalls == SpecularReflector::SPECULAR_RECURSION_DEPTH )
 	{
 		return Vector3(0,0,0);
 	}

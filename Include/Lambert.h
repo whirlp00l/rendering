@@ -26,6 +26,9 @@ protected:
     Vector3 m_ka;
 
 	Vector3 getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
+	Vector3 getIndirectLight( const HitInfo hitInfo, const Scene& scene ) const;
+
+	static const int PATH_TRACING_RECURSION_DEPTH;
 };
 
 #endif // CSE168_LAMBERT_H_INCLUDED

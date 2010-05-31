@@ -100,7 +100,7 @@ Scene::raytraceImage(Camera *cam, Image *img)
 		locStartTime.wSecond, locStartTime.wMilliseconds );
 	*/   
 
-	// seed randomizer for path tracing
+	// seed randomizer for path tracing and/or depth of field
 	if( USE_PATH_TRACING || USE_DEPTH_OF_FIELD )
 		srand((unsigned)time(0));
 
@@ -144,13 +144,6 @@ Scene::raytraceImage(Camera *cam, Image *img)
 				else
 				{
 					shadeResult = hitInfo.material->shade(ray, hitInfo, *this);
-
-					// incorporate indirect lighting
-					if( hitInfo.material->isDiffuse() && USE_PATH_TRACING )
-					{	
-						// add in the indirect lighting result (only use a fraction of it in the final color)
-						shadeResult += getIndirectLight( hitInfo ) * Vector3(0.5f);
-					} // end indirect lighting
 				} // end don't use depth of field
 			}
 			else
@@ -208,67 +201,5 @@ Scene::trace(HitInfo& minHit, const Ray& ray, float tMin, float tMax) const
     return m_bvh.intersect(minHit, ray, tMin, tMax);
 }
 
-Vector3
-Scene::getIndirectLight( const HitInfo hitInfo )
-{
-	Vector3 indirectLighting(0,0,0);
-	Ray indirectLightingRay;
-	HitInfo indirectLightingHit; 
-	
-	for( int k = 0; k < NUM_SAMPLES_PER_PIXEL; k++ )
-	{
-		// sample indirect lighting here
-		float x = rand() / static_cast<double>(RAND_MAX);
-		float y = rand() / static_cast<double>(RAND_MAX);
-		float z = rand() / static_cast<double>(RAND_MAX);
 
-		// since rand() only generates values between 0 adn RAND_MAX,
-		// we must randomize whether or not this value is negative
-		float posOrNeg = rand() / static_cast<double>(RAND_MAX);
-		if( posOrNeg < 0.5 )
-			x *= -1;
-		posOrNeg = rand() / static_cast<double>(RAND_MAX);
-		if( posOrNeg < 0.5 )
-			y *= -1;
-		posOrNeg = rand() / static_cast<double>(RAND_MAX);
-		if( posOrNeg < 0.5 )
-			z *= -1;
-
-		Vector3 randomDir(x,y,z);
-		randomDir.normalize();
-
-		// make sure the random direction isn't pointing INTO the material
-		if( dot( randomDir, hitInfo.N ) < 0 )
-			randomDir *= -1;
-
-		indirectLightingRay.o = hitInfo.P;
-		indirectLightingRay.d = randomDir;
-		if (trace(indirectLightingHit, indirectLightingRay, epsilon, MIRO_TMAX))
-		{
-			bool hitAreaLight = false;
-
-			// loop over all of the lights to see if we hit an area light
-			const Lights *lightlist = this->lights();
-			Lights::const_iterator lightIter;
-			for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
-			{
-				PointLight* pLight = *lightIter;
-				if( pLight->isAreaLight() && (( AreaLight * )pLight)->containsPoint( indirectLightingHit.P ) )
-				{
-					hitAreaLight = true;
-					break;
-				}
-			}
-
-			// only add this indirect lighting contribution if we didn't hit an area light
-			if( !hitAreaLight )
-				indirectLighting += indirectLightingHit.material->shade(indirectLightingRay, indirectLightingHit, *this);
-		}
-	}
-
-	// average the result and add it to the shade result here
-	indirectLighting /= NUM_SAMPLES_PER_PIXEL;
-
-	return indirectLighting;
-}
 

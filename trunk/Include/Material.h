@@ -36,8 +36,6 @@ public:
 	bool isSpecular() const { return m_type == SPECULAR_REFLECTOR || m_type == SPECULAR_REFRACTOR; }
 	bool isDiffuse() const { return m_type == DIFFUSE || m_type == STONE; }
 
-	static const int SPECULAR_RECURSION_DEPTH; // upper limit for number of reflective bounces to trace
-
 	static Material * loadMaterial( char * fileName );
 
 	Vector3 calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const;

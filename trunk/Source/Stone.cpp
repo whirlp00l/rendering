@@ -51,7 +51,8 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 	delete [] at;
 	at = NULL;
 
-	Vector3 L = Vector3(0.0f, 0.0f, 0.0f);
+	Vector3 L(0.0f, 0.0f, 0.0f);
+	Vector3 diffuseComponent(0.0f, 0.0f, 0.0f);
 	// use diffuse lighting (if distance <= threshold, leave it black)
 	if( distance > THRESHOLD ) 
 	{
@@ -62,15 +63,24 @@ Stone::shade(const Ray &ray, const HitInfo &hit, const Scene &scene) const
 			red = std::max( 0.0f, (1 + sin(colorID))/2 );
 			blue = std::max( 0.0f, (1 + cos(colorID))/2 );
 			green = std::max( 0.0f, ( red + blue ) / 2 );
+			diffuseComponent = Vector3( red, green, blue );
 			perlinNoise = PerlinNoise::noise(hit.P.x, hit.P.y, hit.P.z);
-			L += Vector3(red,green,blue) * getDiffuseColor( ray, hit, scene );
+			L += diffuseComponent * getDiffuseColor( ray, hit, scene );
 			break;
 		case REALISTIC:
+			diffuseComponent = m_kd;
 			perlinNoise = (1 + mNoiseMaker->Get( hit.P.x, hit.P.y, hit.P.z )) / 2;
 			L += perlinNoise * getDiffuseColor( ray, hit, scene );
 			break;
 		}
 	}
+
+	// incorporate indirect lighting
+	if( USE_PATH_TRACING )
+	{	
+		// add in the indirect lighting result
+		L += getIndirectLight( hit, scene ) * diffuseComponent;
+	} // end indirect lighting
 		    
 	// add the ambient component
 	L += m_ka;

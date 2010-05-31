@@ -16,6 +16,7 @@ public:
 
 protected:
 	Vector3 getReflectedColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
+	static const int SPECULAR_RECURSION_DEPTH;
 };
 
 #endif; // SPECULAR_REFLECTOR_H

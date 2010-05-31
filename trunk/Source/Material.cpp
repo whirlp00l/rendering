@@ -7,8 +7,6 @@
 #include "Ray.h"
 #include "WorleyNoise.h"
 
-const int Material::SPECULAR_RECURSION_DEPTH = 20;
-
 Material::Material()
 {
 	m_phong_exp = 0.0f;

@@ -11,7 +11,7 @@ class Image;
 
 #define USE_ENVIRONMENT_MAP 1
 #define ENVIRONMENT_MAP_FILE_NAME "Resource\\stpeters_probe.pfm"
-#define USE_PATH_TRACING 1
+#define USE_PATH_TRACING 0
 #define NUM_PATH_TRACING_SAMPLES 3
 #define USE_DEPTH_OF_FIELD 0
 #define NUM_DEPTH_OF_FIELD_SAMPLES 15

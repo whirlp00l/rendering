@@ -149,7 +149,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
 	}
 
 	teapotMaterial->setPhongExp( 50.0f );
-	//teapotMaterial->setUseBumpMap( true );
+	teapotMaterial->setUseBumpMap( true );
 
     TriangleMesh * teapot = new TriangleMesh;
 	Matrix4x4 transform;

@@ -264,6 +264,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Source\PhotonMap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Scene.cpp"
 				>
 			</File>
@@ -415,6 +419,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\PFMLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\PhotonMap.h"
 				>
 			</File>
 			<File

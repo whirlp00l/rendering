@@ -100,9 +100,8 @@ Scene::raytraceImage(Camera *cam, Image *img)
 		locStartTime.wSecond, locStartTime.wMilliseconds );
 	*/   
 
-	// seed randomizer for path tracing and/or depth of field
-	if( USE_PATH_TRACING || USE_DEPTH_OF_FIELD )
-		srand((unsigned)time(0));
+	// seed randomizer for bump mapping, path tracing and/or depth of field (always seed it just in case we're doing bump mapping)
+	srand((unsigned)time(0));
 
 	clock_t clockStart = clock();
 

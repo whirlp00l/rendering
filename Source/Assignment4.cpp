@@ -96,7 +96,7 @@ Assignment4::makePondScene()
 	*/
 
 	// create the water floor
-	Material * waterMaterial = new Lambert(Vector3(0,0,1));
+	Material * waterMaterial = new Lambert(Vector3(0,0,1));//new SpecularRefractor(SpecularRefractor::getRefractiveIndex(SpecularRefractor::WATER_20_C));
     TriangleMesh * water = new TriangleMesh;
     water->createSingleTriangle();
     water->setV1(Vector3(-100, 0, -50));
@@ -169,14 +169,42 @@ Assignment4::makePondScene()
     cattailMesh2->load("Resource\\cattails.obj", xform);
     AssignmentHelper::addMeshTrianglesToScene(cattailMesh2, cattailMaterial2);
 
-	// create pond flowers mesh
+	// create pond flowers mesh (the large, full one)
     xform.setIdentity();
 	xform *= AssignmentHelper::scale(.3f,.3f,.3f);
-	xform *= AssignmentHelper::translate(20,0,-90);
+	xform *= AssignmentHelper::translate(20,0,-95);
     Material* pondFlowersMaterial = new Lambert(Vector3(1.0f,1.0f,0.0f));
     TriangleMesh * pondFlowersMesh = new TriangleMesh;
     pondFlowersMesh->load("Resource\\pond_flowers.obj", xform);
     AssignmentHelper::addMeshTrianglesToScene(pondFlowersMesh, pondFlowersMaterial);
+
+	// create small pond flowers mesh (fills in space between other pond flowers and left background weeds)
+	xform.setIdentity();
+	xform *= AssignmentHelper::scale(.3f,.3f,.3f);
+	xform *= AssignmentHelper::translate(-30,0,-135);
+    Material* smallPondFlowersMaterial = new Lambert(Vector3(1.0f,0.0f,1.0f));
+    TriangleMesh * smallPondFlowersMesh = new TriangleMesh;
+    smallPondFlowersMesh->load("Resource\\small_pond_flowers.obj", xform);
+    AssignmentHelper::addMeshTrianglesToScene(smallPondFlowersMesh, smallPondFlowersMaterial);
+
+
+	// create left background weeds
+	xform.setIdentity();
+	xform *= AssignmentHelper::scale(.45f,.45f,.45f);
+	xform *= AssignmentHelper::translate(-43,0,-60);
+    Material* leftWeedsMaterial = new Lambert(Vector3(1.0f,0.0f,0.0f));
+    TriangleMesh * leftWeedsMesh = new TriangleMesh;
+    leftWeedsMesh->load("Resource\\water_weeds.obj", xform);
+    AssignmentHelper::addMeshTrianglesToScene(leftWeedsMesh, leftWeedsMaterial);
+
+	// create right background weeds
+	xform.setIdentity();
+	xform *= AssignmentHelper::scale(.5f,.5f,.5f);
+	xform *= AssignmentHelper::translate(60,0,-60);
+    Material* rightWeedsMaterial = new Lambert(Vector3(1.0f,0.0f,0.0f));
+    TriangleMesh * rightWeedsMesh = new TriangleMesh;
+    rightWeedsMesh->load("Resource\\small_water_weeds.obj", xform);
+    AssignmentHelper::addMeshTrianglesToScene(rightWeedsMesh, rightWeedsMaterial);
 
     // let objects do pre-calculations if needed
     g_scene->preCalc();

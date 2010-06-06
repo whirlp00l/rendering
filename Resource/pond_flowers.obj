@@ -3221,7 +3221,7 @@ vn 0.2904 0.9116 -0.2909
 # 1544 vertex normals
 
 g aqua03
-usemtl Default
+usemtl Resource\\pond_flowers_diffuse
 s 1
 f 1//1 2//2 3//3 
 f 3//3 3//3 2//2 

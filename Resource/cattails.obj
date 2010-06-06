@@ -15193,7 +15193,7 @@ vn -0.9888 -0.1093 -0.1017
 # 9934 vertex normals
 
 g Obj_000004
-usemtl mat4
+usemtl Resource\\cattail_brown_diffuse
 s 1
 f 1//1 2//1 3//1 
 f 4//2 5//2 6//2 
@@ -26377,7 +26377,7 @@ vn 0.7172 0.6444 0.2654
 # 528 vertex normals
 
 g Obj_000003
-usemtl mat3
+usemtl Resource\\cattail_light_green_diffuse
 s 1
 f 5248//9935 5249//9935 5250//9935 
 f 5251//9936 5252//9936 5253//9936 
@@ -27157,7 +27157,7 @@ vn -0.4636 0.2512 -0.8497
 # 143 vertex normals
 
 g Obj_000002
-usemtl mat2
+usemtl Resource\\cattail_dark_green_diffuse
 s 1
 f 5691//10463 5692//10463 5693//10463 
 f 5694//10464 5695//10464 5696//10464 
@@ -42944,7 +42944,7 @@ vn -0.0283 0.1583 -0.9870
 # 9330 vertex normals
 
 g Obj_000001
-usemtl mat1
+usemtl Resource\\cattail_top_diffuse
 s 1
 f 5787//10606 5788//10606 5789//10606 
 f 5790//10607 5791//10607 5792//10607 

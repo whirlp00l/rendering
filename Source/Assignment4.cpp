@@ -79,7 +79,7 @@ Assignment4::makePondScene()
 	Vector3 pos( 10, 35, 30 );
 	light->setPosition(pos);
     light->setColor(Vector3(1, 1, 1));
-    light->setWattage(1000);
+    light->setWattage(2000);
     g_scene->addLight(light);
 
 	// transform matrix to use for object loading

@@ -32,7 +32,7 @@ public:
 	Type getType() const { return m_type; }
 	float getRefractiveIndex() const { return m_refractive_index; }
 	bool useBumpMap() const { return m_use_bump_map; }
-	void setUseBumpMap( bool useBumpMap ); 
+	void setUseBumpMap( bool useBumpMap, int octaves = 4, float freq = 6, float amp = 1, int seed = 14 ); 
 	bool isSpecular() const { return m_type == SPECULAR_REFLECTOR || m_type == SPECULAR_REFRACTOR; }
 	bool isDiffuse() const { return m_type == DIFFUSE || m_type == STONE; }
 

@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 
-#define ASSIGNMENT_NUMBER 4
+#define ASSIGNMENT_NUMBER 3
 
 int
 main(int argc, char*argv[])

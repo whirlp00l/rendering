@@ -101,7 +101,7 @@ Material::loadMaterial( char * fileName )
 }
 
 void
-Material::setUseBumpMap( bool useBumpMap )
+Material::setUseBumpMap( bool useBumpMap, int octaves, float freq, float amp, int seed )
 {
 	// use a bump map for this material
 	if( useBumpMap )
@@ -109,7 +109,7 @@ Material::setUseBumpMap( bool useBumpMap )
 		// if we don't already have one, we need to create a noise maker
 		if( !m_bump_map_noise_maker )
 		{
-			m_bump_map_noise_maker = new CustomizablePerlinNoise(3, 2, 0.3, 23);
+			m_bump_map_noise_maker = new CustomizablePerlinNoise( octaves, freq, amp, seed );
 		}
 	}
 	// DON'T use a bump map for this material

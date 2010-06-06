@@ -109,7 +109,7 @@ Material::setUseBumpMap( bool useBumpMap )
 		// if we don't already have one, we need to create a noise maker
 		if( !m_bump_map_noise_maker )
 		{
-			m_bump_map_noise_maker = new CustomizablePerlinNoise(4, 4, 1, 14);
+			m_bump_map_noise_maker = new CustomizablePerlinNoise(3, 2, 0.3, 23);
 		}
 	}
 	// DON'T use a bump map for this material
@@ -132,20 +132,67 @@ Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
 	if( !m_use_bump_map || !m_bump_map_noise_maker )
 		return origNormal;
 
-	// let's make some noise!
-	float noiseCoefX = m_bump_map_noise_maker->Get(hitPoint.x + 0.1, hitPoint.y + 0.1, hitPoint.z + 0.1);
-	float noiseCoefY = m_bump_map_noise_maker->Get(hitPoint.y + 0.1, hitPoint.z + 0.1, hitPoint.x + 0.1);
-	float noiseCoefZ = m_bump_map_noise_maker->Get(hitPoint.z + 0.1, hitPoint.x + 0.1, hitPoint.y + 0.1);
+	/*
+	 * IDEA:
+	 * We want to approximate changing the height of each point that we render on the surface.
+	 * If the original point is P and its normal is N, then the new point can be defined as:
+	 *		P' = P + h * N
+	 * where h is a randomly generated height (given by a noise function).
+	 * We can define 2 vectors U and V that describe the plane in which point P sits (using its normal N):
+	 *		U = N x R, V = N x U
+	 * where R is some randomly generated vector that is NOT parallel to N.
+	 * We can then find dP'/dU and dP'/dV, which define the surface at P', as follows (uses the derivative of the 1st eqn):
+	 *		dP'/dU = dP/dU + dh/dU * N + h * dN/dU 
+	 *		dP'/dV = dP/dV + dh/dV * N + h * dN/dV
+	 * Note that in both of these partial derivatives, the 3rd term in the sum can be ignored 
+	 * since N does not change with respec to U or V. In other words,
+	 *		dP'/dU = dP/dU + dh/dU * N 
+	 *		dP'/dV = dP/dV + dh/dV * N
+	 * Then our desired bump-mapped normal, N', can be found by taking the cross product of 2 derivates:
+	 *		N' = dP'/dU x dP'/dV
+	 */
 
-	//Vector3 perturbedNormal( ( origNormal.x + 0.1 )* noiseCoefX, ( origNormal.y + 0.1 ) * noiseCoefY, ( origNormal.z + 0.1 ) * noiseCoefZ );
-	//perturbedNormal *= perturbedNormal;
-	Vector3 perturbedNormal( noiseCoefX, noiseCoefY, noiseCoefZ );
-	perturbedNormal += origNormal;
+	// calculate random bump-mapped height with noise function
+	float bumpHeight = m_bump_map_noise_maker->Get( hitPoint.x, hitPoint.y, hitPoint.z );
+
+	// find a random vector that we can use to find U (random direction can't be parallel to original normal) 
+	Vector3 randomDir;
+	float magCrossProd;
+	float epsilonSquared = epsilon * epsilon; // square epsilon to avoid having to take the sqrt to get the cross product's magnitude
+	do
+	{
+		randomDir.x = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+		randomDir.y = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+		randomDir.z = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+		randomDir.normalize();
+		Vector3 crossProd = cross( randomDir, origNormal );
+		magCrossProd = crossProd.length2();
+	}
+	while( magCrossProd < epsilonSquared );
+
+	// now we can calculate U and V
+	Vector3 uDir = cross( randomDir, origNormal );
+	uDir.normalize();
+	Vector3 vDir = cross( origNormal, uDir );
+	vDir.normalize();
+
+	// now calculate the partial derivates of P' with respect to U and V
+	Vector3 dPdU = ( ( hitPoint + epsilon * uDir ) - ( hitPoint - epsilon * uDir ) ) / ( 2 * epsilon );
+	Vector3 dPdV = ( ( hitPoint + epsilon * vDir ) - ( hitPoint - epsilon * vDir ) ) / ( 2 * epsilon );
+
+	// calculate the partial derivates of h with respect to U and V
+	Vector3 PUPrime = hitPoint + epsilon * uDir;
+	Vector3 PVPrime = hitPoint + epsilon * vDir;
+	Vector3 dHdU = ( m_bump_map_noise_maker->Get( PUPrime.x, PUPrime.y, PUPrime.z ) - bumpHeight ) / ( PUPrime - hitPoint ).length();
+	Vector3 dHdV = ( m_bump_map_noise_maker->Get( PVPrime.x, PVPrime.y, PVPrime.z ) - bumpHeight ) / ( PVPrime - hitPoint ).length();
+
+	// now we can calculate dP'/dU and dP'/dV
+	Vector3 dPPrime_dU = dPdU + dHdU * origNormal;
+	Vector3 dPPrime_dV = dPdV + dHdV * origNormal;
+
+	// finally, calcualte the perturbed normal
+	Vector3 perturbedNormal = cross( dPPrime_dU, dPPrime_dV );
 	perturbedNormal.normalize();
-
-	// we don't want to completely FLIP any normals
-	if( dot( perturbedNormal, origNormal ) < 0 )
-		perturbedNormal *= -1;
 
 	return perturbedNormal;
 }

@@ -8,6 +8,7 @@ public:
 	virtual ~Assignment4();
 
 	void makeSponzaScene();
+	void makePondScene();
 };
 
 #endif // ASSIGNMENT_4_H_INCLUDED

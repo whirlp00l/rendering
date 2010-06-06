@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 
-#define ASSIGNMENT_NUMBER 3
+#define ASSIGNMENT_NUMBER 4
 
 int
 main(int argc, char*argv[])
@@ -75,7 +75,7 @@ main(int argc, char*argv[])
 	case 4:
 		// ASSIGNMENT 4
 		assn4 = new Assignment4();
-		assn4->makeSponzaScene();
+		assn4->makePondScene();
 		delete assn4;
 		assn4 = NULL;
 		break;

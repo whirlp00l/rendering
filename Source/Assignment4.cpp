@@ -201,7 +201,7 @@ Assignment4::makePondScene()
 	// create right background weeds
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.45f,.45f,.45f);
-	xform *= AssignmentHelper::translate(50,0,-85);
+	xform *= AssignmentHelper::translate(45,0,-85);
     Material* rightWeedsMaterial = new Lambert(Vector3(1.0f,0.0f,0.0f));
     TriangleMesh * rightWeedsMesh = new TriangleMesh;
     rightWeedsMesh->load("Resource\\small_water_weeds.obj", xform);

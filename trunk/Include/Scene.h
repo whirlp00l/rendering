@@ -14,7 +14,7 @@ class Image;
 #define USE_PATH_TRACING 0
 #define NUM_PATH_TRACING_SAMPLES 3
 #define USE_DEPTH_OF_FIELD 0
-#define NUM_DEPTH_OF_FIELD_SAMPLES 15
+#define NUM_DEPTH_OF_FIELD_SAMPLES 30
 
 class Scene
 {

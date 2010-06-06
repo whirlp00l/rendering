@@ -10,7 +10,7 @@ class Camera;
 class Image;
 
 #define USE_ENVIRONMENT_MAP 1
-#define ENVIRONMENT_MAP_FILE_NAME "Resource\\stpeters_probe.pfm"
+#define ENVIRONMENT_MAP_FILE_NAME "Resource\\rnl_probe.pfm"
 #define USE_PATH_TRACING 0
 #define NUM_PATH_TRACING_SAMPLES 3
 #define USE_DEPTH_OF_FIELD 0

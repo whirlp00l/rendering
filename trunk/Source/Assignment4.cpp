@@ -115,7 +115,7 @@ Assignment4::makePondScene()
 	// create large lilly pad
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.2f,.2f,.2f);
-	xform *= AssignmentHelper::translate(0, 0, 0);
+	xform *= AssignmentHelper::translate(-18, 0, 0);
 	Material* largeLillyPadMaterial = new Lambert(Vector3(0.0f,1.0f,0.0f));
     TriangleMesh * largeLillyPadMesh = new TriangleMesh;
     largeLillyPadMesh->load("Resource\\large_lilly_pad.obj", xform);
@@ -124,7 +124,7 @@ Assignment4::makePondScene()
 	// create lilly (on top of large lilly pad)
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.2f,.2f,.2f);
-	xform *= AssignmentHelper::translate(0, 0, 0);
+	xform *= AssignmentHelper::translate(-18, 0, 0);
 	Material* lillyMaterial = new Lambert(Vector3(1.0f,0.0f,0.5f));
     TriangleMesh * lillyMesh = new TriangleMesh;
     lillyMesh->load("Resource\\lilly.obj", xform);
@@ -142,7 +142,7 @@ Assignment4::makePondScene()
 	// create small lilly pad (in background near background cattails)
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.15f,.15f,.15f);
-	xform *= AssignmentHelper::translate(-70,0,-15);
+	xform *= AssignmentHelper::translate(-80,0,-15);
 	xform *= AssignmentHelper::rotate(80, 0, 1, 0);
 	Material* smallLillyPadMaterial2 = new Lambert(Vector3(0.0f,1.0f,1.0f));
     TriangleMesh * smallLillyPadMesh2 = new TriangleMesh;
@@ -187,7 +187,6 @@ Assignment4::makePondScene()
     smallPondFlowersMesh->load("Resource\\small_pond_flowers.obj", xform);
     AssignmentHelper::addMeshTrianglesToScene(smallPondFlowersMesh, smallPondFlowersMaterial);
 
-
 	// create left background weeds
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.45f,.45f,.45f);
@@ -199,8 +198,8 @@ Assignment4::makePondScene()
 
 	// create right background weeds
 	xform.setIdentity();
-	xform *= AssignmentHelper::scale(.5f,.5f,.5f);
-	xform *= AssignmentHelper::translate(60,0,-60);
+	xform *= AssignmentHelper::scale(.45f,.45f,.45f);
+	xform *= AssignmentHelper::translate(50,0,-90);
     Material* rightWeedsMaterial = new Lambert(Vector3(1.0f,0.0f,0.0f));
     TriangleMesh * rightWeedsMesh = new TriangleMesh;
     rightWeedsMesh->load("Resource\\small_water_weeds.obj", xform);

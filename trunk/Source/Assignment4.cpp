@@ -185,7 +185,7 @@ Assignment4::makePondScene()
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.15f,.15f,.15f);
 	xform *= AssignmentHelper::translate(-100,0,5);
-	xform *= AssignmentHelper::rotate(80, 0, 1, 0);
+	xform *= AssignmentHelper::rotate(-35, 0, 1, 0);
 	Material* smallLillyPadMaterial2 = new Lambert(Vector3(0.0f,1.0f,1.0f));
     TriangleMesh * smallLillyPadMesh2 = new TriangleMesh;
     smallLillyPadMesh2->load("Resource\\small_lilly_pad.obj", xform);

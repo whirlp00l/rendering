@@ -62,8 +62,10 @@ Material::loadMaterial( char * fileName )
 		return NULL;
 	}
 
-	Material * material = NULL;
 	Vector3 kd(1), ka(0);
+	bool useBumpMap;
+	int octaves, seed; // for bump map noise maker
+	float freq, amp; // for bump map noise maker
 	char buf[80];
 	while( fgets( buf, 80, fp ) != 0 )
 	{
@@ -90,6 +92,12 @@ Material::loadMaterial( char * fileName )
 				sscanf_s(space + 1, "%f %f %f\n", &x, &y, &z);
 				kd = Vector3(x,y,z);
 			}
+			// bump mapping information
+			else if( strcmp( buf, "use_bump_map" ) == 0 )
+			{
+				sscanf_s(space + 1, "%d %f %f %d\n", &octaves, &freq, &amp, &seed);
+				useBumpMap = true;
+			}
 			// else ignore line
 		}
 		// else ignore line
@@ -97,7 +105,11 @@ Material::loadMaterial( char * fileName )
 
 	( void )fclose( fp );
 
-	return new Lambert( kd, ka );
+	Material * material = new Lambert( kd, ka );
+	if( useBumpMap )
+		material->setUseBumpMap( true, octaves, freq, amp, seed );
+
+	return material;
 }
 
 void

@@ -12,7 +12,7 @@
 #include "Lambert.h"
 #include "SpecularReflector.h"
 #include "SpecularRefractor.h"
-#include "Stone.h"
+#include "Sand.h"
 #include "DebugMem.h"
 
 #include "AssignmentHelper.h"
@@ -86,8 +86,57 @@ Assignment4::makePondScene()
 	Matrix4x4 xform;
 	xform.setIdentity();
 
+	// create the sand floor
+	Material * sandMaterial = new Sand();
+    TriangleMesh * sand = new TriangleMesh;
+    sand->createSingleTriangle();
+    sand->setV1(Vector3(-100, -25, -50));
+    sand->setV2(Vector3(   0, -25,  100));
+    sand->setV3(Vector3( 100, -25, -50));
+    sand->setN1(Vector3(0, 1, 0));
+    sand->setN2(Vector3(0, 1, 0));
+    sand->setN3(Vector3(0, 1, 0));
+
+	Triangle* sandTri = new Triangle;
+    sandTri->setIndex(0);
+    sandTri->setMesh(sand);
+    sandTri->setMaterial(sandMaterial); 
+    g_scene->addObject(sandTri);
+
+	// create back wall of sand ( 2 triangles )
+    TriangleMesh * sandWall1 = new TriangleMesh; // begin wall 1
+    sandWall1->createSingleTriangle();
+    sandWall1->setV1(Vector3(-100, -25, -50));
+    sandWall1->setV2(Vector3( 100, -25, -50));
+    sandWall1->setV3(Vector3( 100, 0, -50));
+    sandWall1->setN1(Vector3(0, 1, 0));
+    sandWall1->setN2(Vector3(0, 1, 0));
+    sandWall1->setN3(Vector3(0, 1, 0));
+
+	Triangle* sandWall1Tri = new Triangle;
+    sandWall1Tri->setIndex(0);
+	sandWall1Tri->setMesh(sandWall1);
+    sandWall1Tri->setMaterial(sandMaterial); 
+    g_scene->addObject(sandWall1Tri); // end wall 1
+
+    TriangleMesh * sandWall2 = new TriangleMesh; // being wall 2
+    sandWall2->createSingleTriangle();
+    sandWall2->setV1(Vector3(-100, -25, -50));
+    sandWall2->setV2(Vector3( 100, 0, -50));
+    sandWall2->setV3(Vector3( -100, 0, -50));
+    sandWall2->setN1(Vector3(0, 1, 0));
+    sandWall2->setN2(Vector3(0, 1, 0));
+    sandWall2->setN3(Vector3(0, 1, 0));
+
+	Triangle* sandWall2Tri = new Triangle;
+    sandWall2Tri->setIndex(0);
+    sandWall2Tri->setMesh(sandWall2);
+    sandWall2Tri->setMaterial(sandMaterial); 
+    g_scene->addObject(sandWall2Tri); // end wall 2
+
 	// create the water floor
-	Material * waterMaterial = new SpecularReflector(Vector3(36,66,44) / 255);
+	Material * waterMaterial = new SpecularRefractor( SpecularRefractor::getRefractiveIndex( SpecularRefractor::WATER_20_C ) );
+							   //new SpecularReflector(Vector3(36,66,44) / 255);
     TriangleMesh * water = new TriangleMesh;
     water->createSingleTriangle();
     water->setV1(Vector3(-100, 0, -50));
@@ -97,11 +146,11 @@ Assignment4::makePondScene()
     water->setN2(Vector3(0, 1, 0));
     water->setN3(Vector3(0, 1, 0));
     
-    Triangle* t = new Triangle;
-    t->setIndex(0);
-    t->setMesh(water);
-    t->setMaterial(waterMaterial); 
-    g_scene->addObject(t);
+    Triangle* waterTri = new Triangle;
+    waterTri->setIndex(0);
+    waterTri->setMesh(water);
+    waterTri->setMaterial(waterMaterial); 
+    g_scene->addObject(waterTri);
 
 	// create large lilly pad
 	xform.setIdentity();

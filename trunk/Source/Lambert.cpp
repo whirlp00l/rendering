@@ -43,6 +43,11 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 
 	// we're about to pop a (potentially) recursive call off the stack
 	numRecursiveCalls--;
+
+	// make sure all components of the shading color are greater than 0
+	L.x = std::max( 0.0f, L.x );
+	L.y = std::max( 0.0f, L.y );
+	L.z = std::max( 0.0f, L.z );
     
     return L;
 }
@@ -71,6 +76,7 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
         // normalize the light direction
         l /= magnitude;
 
+		/*
 		// we only need to add this light's contribution if we're not in shadow
 		Ray shadowRay;
 		shadowRay.d = l;
@@ -82,6 +88,7 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
 		{
 			continue;
 		}
+		*/
 
 		float hitRatio = 1;
 		if( pLight->isAreaLight() )

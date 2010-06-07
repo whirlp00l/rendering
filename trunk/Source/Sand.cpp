@@ -11,7 +11,7 @@ Lambert(kd), mNoiseMultiplier(noiseMultiplier)
 {
 	mNoiseMaker = new CustomizablePerlinNoise(8, 8, 0.2, 36);
 	// we always want to use a bump map with our sand
-	setUseBumpMap( true, 1, 1, 0.4, 23 );
+	setUseBumpMap( true, 2, 1, 0.4, 23 );
 }
 
 Sand::~Sand()

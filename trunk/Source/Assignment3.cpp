@@ -170,7 +170,7 @@ Assignment3::makeTeapotScene( Material::Type teapotMaterialType )
     floor->setN3(Vector3(0, 1, 0));
     
 	Material* floorMaterial = new Stone(Stone::COLORFUL);
-	//floorMaterial->setUseBumpMap( true );
+	floorMaterial->setUseBumpMap( true );
 	//Material * floorMaterial = new Lambert(Vector3(1.0f));
     Triangle* t = new Triangle;
     t->setIndex(0);

@@ -194,7 +194,7 @@ Assignment4::makePondScene()
 	// create foreground cattail mesh
 	xform.setIdentity();
 	xform *= AssignmentHelper::scale(.18f,.18f,.18f);
-	xform *= AssignmentHelper::translate(35,0,95);
+	xform *= AssignmentHelper::translate(35,-5,95);
 	xform *= AssignmentHelper::rotate(90, 0, 1, 0);
     Material* cattailMaterial = new Lambert(Vector3(1.0f,0.0f,0.0f));
     TriangleMesh * cattailMesh = new TriangleMesh;

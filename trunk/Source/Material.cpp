@@ -139,7 +139,7 @@ Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
 	 *		P' = P + h * N
 	 * where h is a randomly generated height (given by a noise function).
 	 * We can define 2 vectors U and V that describe the plane in which point P sits (using its normal N):
-	 *		U = N x R, V = N x U
+	 *		U = R x N, V = N x U
 	 * where R is some randomly generated vector that is NOT parallel to N.
 	 * We can then find dP'/dU and dP'/dV, which define the surface at P', as follows (uses the derivative of the 1st eqn):
 	 *		dP'/dU = dP/dU + dh/dU * N + h * dN/dU 
@@ -183,8 +183,8 @@ Material::calcBumpMappedNormal( Vector3 hitPoint, Vector3 origNormal ) const
 	// calculate the partial derivates of h with respect to U and V
 	Vector3 PUPrime = hitPoint + epsilon * uDir;
 	Vector3 PVPrime = hitPoint + epsilon * vDir;
-	Vector3 dHdU = ( m_bump_map_noise_maker->Get( PUPrime.x, PUPrime.y, PUPrime.z ) - bumpHeight ) / ( PUPrime - hitPoint ).length();
-	Vector3 dHdV = ( m_bump_map_noise_maker->Get( PVPrime.x, PVPrime.y, PVPrime.z ) - bumpHeight ) / ( PVPrime - hitPoint ).length();
+	Vector3 dHdU = ( m_bump_map_noise_maker->Get( PUPrime.x, PUPrime.y, PUPrime.z ) - bumpHeight ) / epsilon;
+	Vector3 dHdV = ( m_bump_map_noise_maker->Get( PVPrime.x, PVPrime.y, PVPrime.z ) - bumpHeight ) / epsilon;
 
 	// now we can calculate dP'/dU and dP'/dV
 	Vector3 dPPrime_dU = dPdU + dHdU * origNormal;

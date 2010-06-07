@@ -76,7 +76,6 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
         // normalize the light direction
         l /= magnitude;
 
-		/*
 		// we only need to add this light's contribution if we're not in shadow
 		Ray shadowRay;
 		shadowRay.d = l;
@@ -86,9 +85,28 @@ Lambert::getDiffuseColor( const Ray& ray, const HitInfo& hit, const Scene& scene
 		// we have a (hard) shadow!
 		if( !pLight->isAreaLight() && scene.trace( hitInfo, shadowRay, epsilon, magnitude ) )
 		{
-			continue;
+			bool inShadow = true;
+			bool hitSomething = true;
+
+			// if we hit a refractive material, light passes through it, so it does not obstruct light
+			while( hitSomething && hitInfo.material->getType() == Material::SPECULAR_REFRACTOR )
+			{
+				// right now, we're not in shadow
+				inShadow = false;
+
+				// see if we hit anything else; start tracing from last hit point
+				shadowRay.o = hitInfo.P;
+				magnitude = ( pLight->position() - shadowRay.o ).length();
+				hitSomething = scene.trace( hitInfo, shadowRay, epsilon, magnitude );
+
+				// if we hit something, put shadow flag back on (if it's refractive, it'll get turned off on the next loop)
+				if( hitSomething )
+					inShadow = true;
+			}
+
+			if( inShadow )
+				continue;
 		}
-		*/
 
 		float hitRatio = 1;
 		if( pLight->isAreaLight() )

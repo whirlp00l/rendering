@@ -210,25 +210,6 @@ Assignment4::makePondScene()
     TriangleMesh * cattailMesh2 = new TriangleMesh;
     cattailMesh2->load("Resource\\cattails.obj", xform);
     AssignmentHelper::addMeshTrianglesToScene(cattailMesh2, cattailMaterial2);
-/*
-	// create pond flowers mesh (the large, full one)
-    xform.setIdentity();
-	xform *= AssignmentHelper::scale(.3f,.3f,.3f);
-	xform *= AssignmentHelper::translate(20,0,-65);
-    Material* pondFlowersMaterial = new Lambert(Vector3(1.0f,1.0f,0.0f));
-    TriangleMesh * pondFlowersMesh = new TriangleMesh;
-    pondFlowersMesh->load("Resource\\pond_flowers.obj", xform);
-    AssignmentHelper::addMeshTrianglesToScene(pondFlowersMesh, pondFlowersMaterial);
-
-	// create small pond flowers mesh (fills in space between other pond flowers and left background weeds)
-	xform.setIdentity();
-	xform *= AssignmentHelper::scale(.3f,.3f,.3f);
-	xform *= AssignmentHelper::translate(-30,0,-135);
-    Material* smallPondFlowersMaterial = new Lambert(Vector3(1.0f,0.0f,1.0f));
-    TriangleMesh * smallPondFlowersMesh = new TriangleMesh;
-    smallPondFlowersMesh->load("Resource\\small_pond_flowers.obj", xform);
-    AssignmentHelper::addMeshTrianglesToScene(smallPondFlowersMesh, smallPondFlowersMaterial);
-*/
 
 	// create left background weeds
 	xform.setIdentity();

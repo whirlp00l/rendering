@@ -6,8 +6,8 @@
 
 #include <assert.h>
 
-SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd ) :
-SpecularReflector(kd)
+SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd, const float & density ) :
+SpecularReflector(kd), m_density(density)
 {
 	m_refractive_index = refractiveIndex;
 	m_type = Material::SPECULAR_REFRACTOR;
@@ -77,7 +77,13 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 		HitInfo recursiveHit;
 		// trace the refracted ray
 		if( scene.trace( recursiveHit, refractedRay, epsilon, MIRO_TMAX ) )
-			L = m_kd * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+		{
+			// use Beer's law: http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_3_Refractions_and_Beers_Law.shtml
+			float rayLength = ( recursiveHit.P - refractedRay.o ).length();
+			Vector3 absorbance = m_kd * m_density * -rayLength;
+			Vector3 transparency( expf( absorbance.x ), expf( absorbance.y ), expf( absorbance.z ) );
+			L = transparency * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+		}
 		else
 		{
 			if( USE_ENVIRONMENT_MAP && scene.environmentMap() )

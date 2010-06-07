@@ -6,7 +6,7 @@
 class SpecularRefractor : public SpecularReflector
 {
 public:
-	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd = Vector3(1) );
+	SpecularRefractor( const float & refractiveIndex, const Vector3 & kd = Vector3(1), const float & density = 1.0f );
 	~SpecularRefractor();
 
 	virtual void preCalc() {}
@@ -32,6 +32,8 @@ protected:
 	// returns true if refraction is allowed and false otherwise. 
 	// if refraction is allowed, it also calculates the refraction direction.
 	bool getRefractedRay( Ray& refractedRay, const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
+
+	float m_density; // in g/cm^3
 };
 
 #endif // SPECULAR_REFRACTOR_H

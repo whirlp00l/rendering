@@ -6,8 +6,8 @@
 
 #include <assert.h>
 
-SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd, const float & density ) :
-SpecularReflector(kd), m_density(density)
+SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd, const float & density, const float & percentRefraction ) :
+SpecularReflector(kd), m_density(density), m_percentRefraction(percentRefraction)
 {
 	m_refractive_index = refractiveIndex;
 	m_type = Material::SPECULAR_REFRACTOR;
@@ -82,7 +82,11 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 			float rayLength = ( recursiveHit.P - refractedRay.o ).length();
 			Vector3 absorbance = m_kd * m_density * -rayLength;
 			Vector3 transparency( expf( absorbance.x ), expf( absorbance.y ), expf( absorbance.z ) );
-			L = transparency * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+			Vector3 refractedColor = transparency * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
+			Vector3 reflectedColor(0,0,0);
+			if( m_percentRefraction < 1 )
+				reflectedColor = getReflectedColor( ray, hit, scene );
+			L = m_percentRefraction * refractedColor + ( 1 - m_percentRefraction ) * reflectedColor;
 		}
 		else
 		{

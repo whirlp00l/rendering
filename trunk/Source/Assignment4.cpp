@@ -136,7 +136,7 @@ Assignment4::makePondScene()
 
 	// create the water floor
 	Material * waterMaterial = new SpecularRefractor( SpecularRefractor::getRefractiveIndex( SpecularRefractor::WATER_20_C ),
-		                                              Vector3(1), 0.01f, 0.95 );
+		                                              Vector3(1), 0.01f );
 							   //new SpecularReflector(Vector3(36,66,44) / 255);
     TriangleMesh * water = new TriangleMesh;
     water->createSingleTriangle();

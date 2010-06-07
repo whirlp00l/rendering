@@ -1,3 +1,4 @@
 # teal lilly pad material
 Ka 0.0 0.0 0.0
 Kd 0 0.5569 0.3490
+use_bump_map 1 1.0 0.2 37

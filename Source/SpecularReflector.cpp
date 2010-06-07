@@ -51,6 +51,11 @@ SpecularReflector::shade( const Ray& ray, const HitInfo& hit, const Scene& scene
 	// we're about to pop a (potentially) recursive call off the stack
 	numRecursiveCalls--;
 
+	// make sure all components of the shading color are greater than 0
+	L.x = std::max( 0.0f, L.x );
+	L.y = std::max( 0.0f, L.y );
+	L.z = std::max( 0.0f, L.z );
+
 	return L;
 }
 

@@ -119,6 +119,12 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	L += m_ka;
 	
 	numRecursiveCalls--;
+
+	// make sure all components of the shading color are greater than 0
+	L.x = std::max( 0.0f, L.x );
+	L.y = std::max( 0.0f, L.y );
+	L.z = std::max( 0.0f, L.z );
+
 	return L;
 }
 

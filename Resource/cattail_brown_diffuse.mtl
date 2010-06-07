@@ -1,3 +1,4 @@
 # cattail brown diffuse material
 Ka 0.0 0.0 0.0
 Kd 0.647 0.1647 0.1647
+use_bump_map 4 2.5 0.04 27

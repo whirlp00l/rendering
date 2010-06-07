@@ -6,8 +6,8 @@
 
 #include <assert.h>
 
-SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd, const float & density, const float & percentRefraction ) :
-SpecularReflector(kd), m_density(density), m_percentRefraction(percentRefraction)
+SpecularRefractor::SpecularRefractor( const float & refractiveIndex, const Vector3 & kd, const float & density ) :
+SpecularReflector(kd), m_density(density)
 {
 	m_refractive_index = refractiveIndex;
 	m_type = Material::SPECULAR_REFRACTOR;
@@ -67,7 +67,8 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 	numRecursiveCalls++;
 
 	Ray refractedRay;
-	bool useRefraction = getRefractedRay( refractedRay, ray, hit, scene );
+	float reflectivity;
+	bool useRefraction = getRefractedRay( refractedRay, reflectivity, ray, hit, scene );
 
 	Vector3 L;
 
@@ -83,10 +84,8 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 			Vector3 absorbance = m_kd * m_density * -rayLength;
 			Vector3 transparency( expf( absorbance.x ), expf( absorbance.y ), expf( absorbance.z ) );
 			Vector3 refractedColor = transparency * recursiveHit.material->shade( refractedRay, recursiveHit, scene );
-			Vector3 reflectedColor(0,0,0);
-			if( m_percentRefraction < 1 )
-				reflectedColor = getReflectedColor( ray, hit, scene );
-			L = m_percentRefraction * refractedColor + ( 1 - m_percentRefraction ) * reflectedColor;
+			Vector3 reflectedColor = getReflectedColor( ray, hit, scene );
+			L = ( 1 - reflectivity ) * refractedColor + reflectivity * reflectedColor;
 		}
 		else
 		{
@@ -139,7 +138,7 @@ SpecularRefractor::shade(const Ray& ray, const HitInfo& hit,const Scene& scene) 
 }
 
 bool 
-SpecularRefractor::getRefractedRay( Ray& refractedRay, const Ray& ray, const HitInfo& hit, const Scene& scene ) const
+SpecularRefractor::getRefractedRay( Ray& refractedRay, float& reflectivity, const Ray& ray, const HitInfo& hit, const Scene& scene ) const
 {
 	Vector3 viewDir = -ray.d; // d is a unit vector
 	// set up refracted ray here
@@ -184,6 +183,13 @@ SpecularRefractor::getRefractedRay( Ray& refractedRay, const Ray& ray, const Hit
 	refractedRay.d = refractDir;
 	refractedRay.o = hit.P;
 	refractedRay.refractiveIndex = refractedRayIndex;
+
+	// since we're using refraction, calculate the reflectivity based on the incident angle
+	float cosTheta = dot( viewDir, normal );
+	float r0 = ( n2 - 1 ) / ( n2 + 1 );
+	r0 *= r0; // square it
+	// use the Schlick approximation to approximate the Fresnel equations
+	reflectivity = r0 + ( 1 - r0 ) * pow( 1 - cosTheta, 5 );  
 
 	return true;
 }

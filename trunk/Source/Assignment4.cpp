@@ -64,20 +64,20 @@ Assignment4::makePondScene()
     g_scene = new Scene;
     g_image = new Image;
 
-    g_image->resize(512, 512);
+    g_image->resize(1024/2, 768/2);
     
     // set up the camera
     g_camera->setBGColor(Vector3(0.0f, 0.0f, 0.2f));
-    g_camera->setEye(Vector3(3, 12.5, 26));
+    g_camera->setEye(Vector3(3, 12.5, 28));
     g_camera->setLookAt(Vector3(0, 0, 0));
     g_camera->setUp(Vector3(0, 1, 0));
-    g_camera->setFOV(55);
+    g_camera->setFOV(42);
 	g_camera->setFocalPlaneDistance( 26.0f );
 
-	// create and place a point light source
-	PointLight * light = new PointLight;
+	// create and place a square area light source
 	Vector3 pos( 10, 35, 30 );
-	light->setPosition(pos);
+	PointLight * light = new PointLight();//new AreaLight( pos, Vector3(1.0,0,0), Vector3(0,0,1.0) );
+	light->setPosition( pos );
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(2000);
     g_scene->addLight(light);
@@ -137,7 +137,7 @@ Assignment4::makePondScene()
 	// create the water floor
 	Material * waterMaterial = new SpecularRefractor( SpecularRefractor::getRefractiveIndex( SpecularRefractor::WATER_20_C ),
 		                                              Vector3(1), 0.01f );
-							   //new SpecularReflector(Vector3(36,66,44) / 255);
+	waterMaterial->setUseBumpMap( true, 1, 0.5, 0.08, 6 );
     TriangleMesh * water = new TriangleMesh;
     water->createSingleTriangle();
     water->setV1(Vector3(-100, 0, -50));

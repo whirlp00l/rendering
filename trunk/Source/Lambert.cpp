@@ -31,8 +31,29 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 
     Vector3 L = getDiffuseColor( ray, hit, scene );
 
-	// incorporate indirect lighting
-	if( USE_PATH_TRACING )
+	// incorporate indirect lighting (either photon mapping OR path tracing; don't use both)
+	if( USE_PHOTON_MAPPING ) // let photon mapping take precedence over path tracing
+	{
+		float irr[3];
+		float pos[3];
+		float normal[3];
+
+		pos[0] = hit.P.x;
+		pos[1] = hit.P.y;
+		pos[2] = hit.P.z;
+
+		normal[0] = hit.N.x;
+		normal[1] = hit.N.y;
+		normal[2] = hit.N.z;
+
+		// get irradiance from photon map
+		scene.photonMap()->irradiance_estimate( irr, pos, normal, MAX_PHOTON_DISTANCE, NUM_PHOTONS );
+
+		Vector3 irradiance( irr[0], irr[1], irr[2] );
+
+		L += irradiance;
+	}
+	else if( USE_PATH_TRACING )
 	{	
 		// add in the indirect lighting result
 		L += getIndirectLight( hit, scene ) * m_kd;

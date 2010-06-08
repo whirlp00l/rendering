@@ -19,7 +19,7 @@ class Image;
 #define USE_PHOTON_MAPPING 1
 #define NUM_PHOTONS 1000000
 #define MAX_PHOTON_BOUNCES 10
-#define MAX_PHOTON_DISTANCE 20
+#define MAX_PHOTON_DISTANCE 100
 
 class Scene
 {

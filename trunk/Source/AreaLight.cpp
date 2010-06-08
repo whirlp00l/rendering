@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-unsigned int AreaLight::NUM_SAMPLES = 20;
+unsigned int AreaLight::NUM_SAMPLES = 18;
 
 AreaLight::AreaLight( const Vector3& position, const Vector3 & axis1, const Vector3 & axis2 ) :
 PointLight(), m_axis1(axis1), m_axis2(axis2), m_samples(NULL)

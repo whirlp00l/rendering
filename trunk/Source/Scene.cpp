@@ -236,6 +236,12 @@ Scene::raytraceImage(Camera *cam, Image *img)
 							// we're gonna bounce this photon again
 							numBounces++;
 
+							// incorporate the color of the material we just hit into the bounced photon's power
+							Vector3 shadeResult = hitInfo.material->shade( ray, hitInfo, *this );
+							photonPower.x *= shadeResult.x;
+							photonPower.y *= shadeResult.y;
+							photonPower.z *= shadeResult.z;
+
 							// generate random direction for this photon
 							x = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
 							y = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
@@ -321,8 +327,6 @@ Scene::raytraceImage(Camera *cam, Image *img)
 					shadeResult = EnvironmentMap::lookUp( ray.d, this->environmentMap(), this->mapWidth(), this->mapHeight() );
 				}
 			}
-
-			
 
 			// now actually set the pixel color
 			img->setPixel(i, j, shadeResult);

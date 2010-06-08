@@ -64,7 +64,7 @@ Assignment4::makePondScene()
     g_scene = new Scene;
     g_image = new Image;
 
-    g_image->resize(1024/2, 768/2);
+    g_image->resize(1024, 768);
     
     // set up the camera
     g_camera->setBGColor(Vector3(0.0f, 0.0f, 0.2f));
@@ -76,8 +76,7 @@ Assignment4::makePondScene()
 
 	// create and place a square area light source
 	Vector3 pos( 10, 35, 30 );
-	PointLight * light = new PointLight();//new AreaLight( pos, Vector3(1.0,0,0), Vector3(0,0,1.0) );
-	light->setPosition( pos );
+	PointLight * light = new AreaLight( pos, Vector3(1.0,0,0), Vector3(0,0,1.0) );
     light->setColor(Vector3(1, 1, 1));
     light->setWattage(2000);
     g_scene->addLight(light);

@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "PointLight.h"
 #include "BVH.h"
+#include "PhotonMap.h"
 
 class Camera;
 class Image;
@@ -13,8 +14,12 @@ class Image;
 #define ENVIRONMENT_MAP_FILE_NAME "Resource\\rnl_probe.pfm"
 #define USE_PATH_TRACING 0
 #define NUM_PATH_TRACING_SAMPLES 3
-#define USE_DEPTH_OF_FIELD 0
-#define NUM_DEPTH_OF_FIELD_SAMPLES 30
+#define USE_DEPTH_OF_FIELD 1
+#define NUM_DEPTH_OF_FIELD_SAMPLES 40
+#define USE_PHOTON_MAPPING 1
+#define NUM_PHOTONS 1000000
+#define MAX_PHOTON_BOUNCES 10
+#define MAX_PHOTON_DISTANCE 20
 
 class Scene
 {
@@ -32,6 +37,8 @@ public:
 	const int mapWidth() const {return m_map_width;}
 	const int mapHeight() const {return m_map_height;}
 
+	const PhotonMap* photonMap() const {return m_photon_map;}
+
     void preCalc();
     void openGL(Camera *cam);
 
@@ -47,6 +54,7 @@ protected:
 	Vector3 * m_environment_map;
 	int m_map_width;
 	int m_map_height;
+	PhotonMap * m_photon_map;
 };
 
 extern Scene * g_scene;

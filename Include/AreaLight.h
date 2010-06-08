@@ -13,6 +13,8 @@ public:
 	float getHitRatio( Vector3 hitPoint, const Scene& scene );
 	bool containsPoint( Vector3 point ) const;
 
+	Vector3 getRandomLightPoint() const;
+
 	virtual void preCalc(); // we'll use this to construct our light sample points
 
 	static unsigned int NUM_SAMPLES;

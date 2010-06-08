@@ -11,6 +11,7 @@ const float Stone::THRESHOLD = 0.02f;
 Stone::Stone(Stone::Coloring coloring, float noiseMultiplier, const Vector3 & kd) :
 Lambert(kd), mColoring(coloring), mNoiseMultiplier(noiseMultiplier)
 {
+	m_type = Material::STONE;
 	mNoiseMaker = new CustomizablePerlinNoise(4, 4, 1, 94);
 }
 

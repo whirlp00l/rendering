@@ -13,10 +13,13 @@ public:
     
     virtual Vector3 shade(const Ray& ray, const HitInfo& hit,
                           const Scene& scene) const;
+	
+	Vector3 getReflectedDir( const Ray& ray, const HitInfo& hit ) const;
+
+	static const int SPECULAR_RECURSION_DEPTH;
 
 protected:
 	Vector3 getReflectedColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
-	static const int SPECULAR_RECURSION_DEPTH;
 };
 
 #endif; // SPECULAR_REFLECTOR_H

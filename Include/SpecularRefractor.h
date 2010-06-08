@@ -26,13 +26,13 @@ public:
 		GLASS_PYREX
 	};
 
-	static float getRefractiveIndex( RefractiveMaterial material );
-
-protected:
 	// returns true if refraction is allowed and false otherwise. 
 	// if refraction is allowed, it also calculates the refraction direction.
 	bool getRefractedRay( Ray& refractedRay, float& reflectivity, const Ray& ray, const HitInfo& hit, const Scene& scene ) const;
 
+	static float getRefractiveIndex( RefractiveMaterial material );
+
+protected:
 	float m_density; // in g/cm^3
 };
 

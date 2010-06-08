@@ -63,8 +63,7 @@ Vector3
 SpecularReflector::getReflectedColor( const Ray& ray, const HitInfo& hit, const Scene& scene ) const
 {
 	// direction to last "eye" point reflected across hit surface normal
-	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * hit.N + ray.d;
-	reflectDir.normalize();
+	Vector3 reflectDir = getReflectedDir( ray, hit );
 	
 	Ray reflectedRay;
 	reflectedRay.o = hit.P;
@@ -88,4 +87,15 @@ SpecularReflector::getReflectedColor( const Ray& ray, const HitInfo& hit, const 
 	}
 
 	return reflectedLight;
+}
+
+Vector3
+SpecularReflector::getReflectedDir( const Ray& ray, const HitInfo& hit ) const
+{
+	// direction to last "eye" point reflected across hit surface normal
+	Vector3 normal = m_use_bump_map ? calcBumpMappedNormal( hit.P, hit.N ) : hit.N;
+	Vector3 reflectDir = -2 * dot(ray.d, hit.N) * normal + ray.d;
+	reflectDir.normalize();
+
+	return reflectDir;
 }

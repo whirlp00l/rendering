@@ -9,6 +9,7 @@
 Sand::Sand(float noiseMultiplier, const Vector3 & kd) :
 Lambert(kd), mNoiseMultiplier(noiseMultiplier)
 {
+	m_type = Material::SAND;
 	mNoiseMaker = new CustomizablePerlinNoise(8, 8, 0.2, 36);
 	// we always want to use a bump map with our sand
 	setUseBumpMap( true, 2, 1, 0.4, 23 );

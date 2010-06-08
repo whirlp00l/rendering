@@ -7,6 +7,8 @@
 #include "DebugMem.h"
 #include "EnvironmentMap.h"
 #include "AreaLight.h"
+#include "SpecularReflector.h"
+#include "SpecularRefractor.h"
 
 #include <windows.h>
 #include <time.h>
@@ -14,7 +16,7 @@
 
 Scene * g_scene = 0;
 
-Scene::Scene() : m_environment_map(0), m_map_width(0), m_map_height(0)
+Scene::Scene() : m_environment_map(0), m_map_width(0), m_map_height(0), m_photon_map(0)
 {
 	m_num_rays_traced = 0;
 }
@@ -35,6 +37,12 @@ Scene::~Scene()
 		}
 	}
 	m_lights.clear();
+
+	if( m_photon_map )
+	{
+		delete m_photon_map;
+		m_photon_map = NULL;
+	}
 }
 
 void
@@ -100,8 +108,169 @@ Scene::raytraceImage(Camera *cam, Image *img)
 		locStartTime.wSecond, locStartTime.wMilliseconds );
 	*/   
 
-	// seed randomizer for bump mapping, path tracing and/or depth of field (always seed it just in case we're doing bump mapping)
+	// seed randomizer for photon mapping, bump mapping, path tracing and/or depth of field 
+	// (always seed it just in case we're doing bump mapping)
 	srand((unsigned)time(0));
+
+	// create the photon map first (don't do this if we've already done it once!)
+	if( USE_PHOTON_MAPPING && !m_photon_map )
+	{
+		printf( "Beginning photon mapping calculations...\n" );
+
+		// divide total number of photons up evenly amongst all lights in the scene
+		const Lights *lightlist = this->lights();
+		int numPhotonsPerLight = ( int )( NUM_PHOTONS / lightlist->size() );
+
+		// just in case the number of photons wasn't evenly divisible by the number of lights
+		int totalNumPhotons = numPhotonsPerLight * lightlist->size();
+		m_photon_map = new PhotonMap( totalNumPhotons );
+	    
+		// loop over all of the lights
+		Lights::const_iterator lightIter;
+		for (lightIter = lightlist->begin(); lightIter != lightlist->end(); lightIter++)
+		{
+			PointLight* pLight = *lightIter;
+			for( int i = 0; i < numPhotonsPerLight; i++ )
+			{
+				// generate random direction for this photon
+				float x = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+				float y = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+				float z = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+
+				// rand() only returns positive numbers; randomize whether each component is positive or negative
+				float posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+				if( posOrNeg < 0.5 )
+					x *= -1;
+				posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+				if( posOrNeg < 0.5 )
+					y *= -1;
+				posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+				if( posOrNeg < 0.5 )
+					z *= -1;
+
+				Vector3 photonDir( x, y, z );
+				photonDir.normalize();
+
+				// now we must trace the scene to find out where to store this photon
+				ray.d = photonDir;
+				// if it's an area light, randomize a place in the light where this photon originates
+				if( pLight->isAreaLight() )
+					ray.o = ( ( AreaLight * )pLight )->getRandomLightPoint();
+				// otherwise it's a point light. originate the photon ray from the light's position
+				else
+					ray.o = pLight->position();
+
+				Vector3 photonPower = pLight->color() * ( pLight->wattage() / numPhotonsPerLight );
+				bool keepTracing = true;
+				float traceMinDistance = 0.0f;
+				int numBounces = 0;
+				int specularRecursionCount = 0;
+				// the photon hit something!
+				while( keepTracing && trace( hitInfo, ray, traceMinDistance ) )
+				{
+					// if this wasn't a diffuse material, we need to reflect/refract appropriately and keep tracing
+					if( !hitInfo.material->isDiffuse() )
+					{
+						if( specularRecursionCount >= SpecularReflector::SPECULAR_RECURSION_DEPTH )
+						{
+							keepTracing = false;
+						}
+						else
+						{
+							specularRecursionCount++;
+							ray.o = hitInfo.P;
+
+							// it's either reflective or refractive; get the new direction accordingly
+							if( hitInfo.material->getType() == Material::SPECULAR_REFLECTOR ) // reflective
+							{
+								ray.d = ( ( SpecularReflector * )hitInfo.material )->getReflectedDir( ray, hitInfo );
+							}
+							else // refractive
+							{
+								Ray refractedRay;
+								float reflectivity;
+								if( ( ( SpecularRefractor * )hitInfo.material )->getRefractedRay( refractedRay, reflectivity, ray, hitInfo, *this ) )
+								{
+									ray.d = refractedRay.d;
+								}
+								else
+								{
+									ray.d = ( ( SpecularRefractor * )hitInfo.material )->getReflectedDir( ray, hitInfo );
+								}
+							}
+						}
+
+						continue;
+					}
+
+					float power[3];
+					float pos[3];
+					float dir[3];
+
+					power[0] = photonPower.x;
+					power[1] = photonPower.y;
+					power[2] = photonPower.z;
+
+					pos[0] = hitInfo.P.x;
+					pos[1] = hitInfo.P.y;
+					pos[2] = hitInfo.P.z;
+
+					dir[0] = ray.d.x;
+					dir[1] = ray.d.y;
+					dir[2] = ray.d.z;
+
+					// store it in the photon map
+					m_photon_map->store( power, pos, dir );
+
+					// we've bounced this photon around enough
+					if( numBounces == MAX_PHOTON_BOUNCES )
+						keepTracing = false;
+					else 
+					{
+						// use Russian Roulette to determine whether or not to terminate this photon
+						float russianRoulette = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+
+						// arbitrarily using probabily 0.5 to bounce this photon
+						if( russianRoulette < 0.5 )
+						{
+							// we're gonna bounce this photon again
+							numBounces++;
+
+							// generate random direction for this photon
+							x = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+							y = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+							z = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+
+							// rand() only returns positive numbers; randomize whether each component is positive or negative
+							posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+							if( posOrNeg < 0.5 )
+								x *= -1;
+							posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+							if( posOrNeg < 0.5 )
+								y *= -1;
+							posOrNeg = rand() / static_cast<double>(RAND_MAX); // yields random value in range [0,1]
+							if( posOrNeg < 0.5 )
+								z *= -1;
+
+							photonDir = Vector3( x, y, z ).normalize();
+
+							// set up the ray for tracing again
+							ray.d = photonDir;
+							ray.o = hitInfo.P;
+							traceMinDistance = epsilon;
+						}
+						else
+							keepTracing = false;
+					}
+				}
+			}
+		}
+
+		// now that we're done creating the photon map, balance the kd tree
+		m_photon_map->balance();
+
+		printf( "Done with photon map calculations!\n\n" );
+	} // end if( USE_PHOTON_MAPPING )
 
 	clock_t clockStart = clock();
 
@@ -159,9 +328,19 @@ Scene::raytraceImage(Camera *cam, Image *img)
 			img->setPixel(i, j, shadeResult);
 		}
 
+		clock_t rowEndTime = clock();
+
+		float timeSoFar = rowEndTime - clockStart;
+		int numRowsDone = j + 1;
+		int numRowsLeft = img->height() - numRowsDone;
+		float avgSecondsPerRow = ( timeSoFar/CLOCKS_PER_SEC ) / numRowsDone;
+
         img->drawScanline(j);
         glFinish();
-        printf("Rendering Progress: %.3f%%\r", j/float(img->height())*100.0f);
+		//printf("Rendering Progress: %.3f%%\r", j/float(img->height())*100.0f);
+        printf("\rProgress: %.3f%%, Time elapsed: %.4f sec, Est. time left: %.4f sec\r", 
+			j/float(img->height())*100.0f, timeSoFar/CLOCKS_PER_SEC, numRowsLeft * (timeSoFar/CLOCKS_PER_SEC) / numRowsDone);
+		
         fflush(stdout);
     }
 

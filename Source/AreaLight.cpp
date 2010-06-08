@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-unsigned int AreaLight::NUM_SAMPLES = 80;
+unsigned int AreaLight::NUM_SAMPLES = 20;
 
 AreaLight::AreaLight( const Vector3& position, const Vector3 & axis1, const Vector3 & axis2 ) :
 PointLight(), m_axis1(axis1), m_axis2(axis2), m_samples(NULL)
@@ -39,7 +39,29 @@ AreaLight::getHitRatio( Vector3 hitPoint, const Scene& scene )
 
 		HitInfo sampleHit;
 		if( scene.trace( sampleHit, sampleRay, epsilon, magnitude ) )
-			numHits++;
+		{
+			bool inShadow = true;
+			bool hitSomething = true;
+
+			// if we hit a refractive material, light passes through it, so it does not obstruct light
+			while( hitSomething && sampleHit.material->getType() == Material::SPECULAR_REFRACTOR )
+			{
+				// right now, we're not in shadow
+				inShadow = false;
+
+				// see if we hit anything else; start tracing from last hit point
+				sampleRay.o = sampleHit.P;
+				magnitude = ( m_samples[i] - sampleRay.o ).length();
+				hitSomething = scene.trace( sampleHit, sampleRay, epsilon, magnitude );
+
+				// if we hit something, put shadow flag back on (if it's refractive, it'll get turned off on the next loop)
+				if( hitSomething )
+					inShadow = true;
+			}
+
+			if( inShadow )
+				numHits++;
+		}
 	}
 
 	return ( NUM_SAMPLES - numHits ) / ( float )NUM_SAMPLES;
@@ -104,4 +126,12 @@ AreaLight::containsPoint( Vector3 point ) const
 
 	// all 3 conditions have been met, so the point lies within the area light
 	return true;
+}
+
+Vector3
+AreaLight::getRandomLightPoint() const
+{
+	assert( m_samples );
+	int sampleIndex = rand() / NUM_SAMPLES;
+	return m_samples[sampleIndex];
 }

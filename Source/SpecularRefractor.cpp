@@ -155,7 +155,7 @@ SpecularRefractor::getRefractedRay( Ray& refractedRay, float& reflectivity, cons
 	{
 		n1 = ray.refractiveIndex;
 		n2 = hit.material->getRefractiveIndex();
-		normal = hit.N;
+		normal = m_use_bump_map ? calcBumpMappedNormal(hit.P, hit.N) : hit.N;
 		refractedRayIndex = hit.material->getRefractiveIndex();
 	}
 	// we're exiting the refractive material
@@ -163,7 +163,7 @@ SpecularRefractor::getRefractedRay( Ray& refractedRay, float& reflectivity, cons
 	{
 		n1 = hit.material->getRefractiveIndex();
 		n2 = 1.0f; // assume we're entering air
-		normal = -hit.N;
+		normal = m_use_bump_map ? -calcBumpMappedNormal(hit.P, hit.N) : -hit.N;
 		refractedRayIndex = 1.0f;
 		nDotViewDir *= -1;
 		flipped = true;

@@ -336,7 +336,7 @@ Scene::raytraceImage(Camera *cam, Image *img)
 
 		float timeSoFar = rowEndTime - clockStart;
 		int numRowsDone = j + 1;
-		int numRowsLeft = img->height() - numRowsDone;
+		int numRowsLeft = img->height() - numRowsDone + 1;
 		float avgSecondsPerRow = ( timeSoFar/CLOCKS_PER_SEC ) / numRowsDone;
 
         img->drawScanline(j);

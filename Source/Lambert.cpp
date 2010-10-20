@@ -38,6 +38,10 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		float pos[3];
 		float normal[3];
 
+		irr[0] = 0.0f;
+		irr[1] = 0.0f;
+		irr[2] = 0.0f;
+
 		pos[0] = hit.P.x;
 		pos[1] = hit.P.y;
 		pos[2] = hit.P.z;
@@ -49,9 +53,9 @@ Lambert::shade(const Ray& ray, const HitInfo& hit, const Scene& scene) const
 		// get irradiance from photon map
 		scene.photonMap()->irradiance_estimate( irr, pos, normal, MAX_PHOTON_DISTANCE, NUM_PHOTONS );
 
-		Vector3 irradiance( irr[0], irr[1], irr[2] );
-
-		L += irradiance;
+		L.x += irr[0];
+		L.y += irr[1];
+		L.z += irr[2];
 	}
 	else if( USE_PATH_TRACING )
 	{	
